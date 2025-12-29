@@ -1,0 +1,115 @@
+# theme = "catppuccin_macchiato"
+theme = "transparent"
+
+
+
+[editor]
+line-number = "relative"
+
+
+[editor.auto-save]
+focus-lost = true
+
+[editor.cursor-shape]
+normal  = "block"     
+insert  = "bar"       
+select  = "underline" 
+
+[keys.normal]
+C-s = ":wa!"
+C-q = ":wqa!"
+w = "move_visual_line_up"
+a = "move_char_left"
+s = "move_visual_line_down"
+d = "move_char_right"
+S-d = "move_next_word_end"
+S-a = "move_prev_word_start"
+S-w = "page_up"
+S-s = "page_down"
+
+h = "move_prev_word_start"
+l = "move_next_word_start"
+j = "page_cursor_half_down"
+k = "page_cursor_half_up"
+S-h = "extend_prev_long_word_start"
+S-l = "extend_next_long_word_start"
+
+
+C-f = ["search", "search_next"]
+c  = "toggle_comments"
+f = "search_next"
+# y = "yank_to_clipboard"
+C-z = "undo"
+C-y = "redo"
+C-c = "yank_to_clipboard"
+C-v = "replace_with_yanked"
+C-r = ":reload-all"
+p = "replace_with_yanked"
+# backspace = "delete_char_backward"
+backspace = "insert_mode"
+ret = "insert_mode"
+
+e = "insert_mode"
+o = "append_mode"
+del = "insert_mode"
+tab = "insert_mode"
+
+C-a = "select_all"
+z = "delete_selection_noyank"
+q = "extend_line_below"
+x = ["extend_line", "yank_main_selection_to_clipboard", "delete_selection"]
+C-x = ["extend_line", "yank_main_selection_to_clipboard", "delete_selection"]
+
+n = "no_op"
+T = "no_op"
+B = "no_op"
+N = "no_op"
+M = "no_op"
+V = "no_op"
+O = "no_op"
+F = "no_op"
+X = "no_op"
+
+# git
+A-g = [
+    ":write-all", 
+    # ":new", 
+    ":insert-output lazygit >/dev/tty", 
+    # ":set mouse false", 
+    # ":set mouse true",
+    # ":buffer-close!", 
+    ":redraw", 
+    ":reload-all"
+]
+
+[keys.normal.space]
+E = [
+  ":sh rm -f /tmp/unique-file-h21a434",
+  ":insert-output yazi '%{buffer_name}' --chooser-file=/tmp/unique-file-h21a434",
+  ":insert-output echo \"x1b[?1049h\" > /dev/tty",
+  ":open %sh{cat /tmp/unique-file-h21a434}",
+  ":redraw",
+]
+
+e = "file_explorer_in_current_directory"
+
+f = "file_picker_in_current_directory"
+
+[keys.insert]
+C-s = ["normal_mode", ":w"]
+C-q = ["normal_mode", ":wq"]
+C-c = ["normal_mode", "yank"]
+C-v = ["normal_mode", "paste_after"]
+C-f = ["normal_mode", "search"]
+C-y = ["normal_mode", "undo"]
+C-a = ["normal_mode", "select_all"]
+C-x = ["normal_mode", "extend_line", "yank_main_selection_to_clipboard", "delete_selection"]
+C-z = ["normal_mode", "undo"]
+del = "normal_mode"
+
+
+[keys.insert.i]
+i = "normal_mode" 
+
+
+

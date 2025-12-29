@@ -1,0 +1,14 @@
+inherits = "catppuccin_macchiato"
+# inherits = "build/everforest_dark_hc"
+
+"ui.background"             = { fg = "default", bg = "default" }
+"ui.statusline"             = { fg = "default", bg = "default" }
+"ui.statusline.inactive"    = { fg = "default", bg = "default" }
+"ui.statusline.normal"      = { fg = "default", bg = "default" }
+"ui.statusline.insert"      = { fg = "default", bg = "default" }
+# "ui.statusline.select"      = { fg = "default", bg = "default" }
+# "ui.popup"                  = { fg = "default", bg = "default" }
+"ui.menu"                   = { fg = "default", bg = "default" }
+# "ui.menu.selected"          = { fg = "default", bg = "default" }
+
+[palette]

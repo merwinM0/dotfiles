@@ -1,0 +1,47 @@
+{
+  "margin": {
+    "prefix": "m",
+    "body": "margin: ${1:10}px;",
+    "description": "Margin shorthand"
+  },
+  "padding": {
+    "prefix": "p",
+    "body": "padding: ${1:10}px;",
+    "description": "Padding shorthand"
+  },
+  "display flex": {
+    "prefix": "df",
+    "body": "display: flex;",
+    "description": "Display flex"
+  },
+  "display grid": {
+    "prefix": "dg",
+    "body": "display: grid;",
+    "description": "Display grid"
+  },
+  "background color": {
+    "prefix": "bg",
+    "body": "background-color: ${1:#fff};",
+    "description": "Background color"
+  },
+  "color": {
+    "prefix": "c",
+    "body": "color: ${1:#000};",
+    "description": "Text color"
+  },
+  "font size": {
+    "prefix": "fz",
+    "body": "font-size: ${1:16}px;",
+    "description": "Font size"
+  },
+  "width": {
+    "prefix": "w",
+    "body": "width: ${1:100}px;",
+    "description": "Width"
+  },
+  "height": {
+    "prefix": "h",
+    "body": "height: ${1:100}px;",
+    "description": "Height"
+  }
+}

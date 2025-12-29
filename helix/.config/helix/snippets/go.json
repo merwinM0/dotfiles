@@ -1,0 +1,93 @@
+{
+  "if err != nil": {
+    "prefix": "iferr",
+    "body": [
+      "if err != nil {",
+      "\treturn ${1:nil, }${2:err}",
+      "}"
+    ],
+    "description": "Standard Go error handling"
+  },
+  "if err != nil with log": {
+    "prefix": "iferrlog",
+    "body": [
+      "if err != nil {",
+      "\tlog.Printf(\"${1:error}: %v\", err)",
+      "\treturn ${2:nil, }${3:err}",
+      "}"
+    ],
+    "description": "Go error handling with logging"
+  },
+  "if err != nil panic": {
+    "prefix": "iferrpanic",
+    "body": [
+      "if err != nil {",
+      "\tpanic(err)",
+      "}"
+    ],
+    "description": "Go error handling with panic"
+  },
+  "function with error": {
+    "prefix": "fnerr",
+    "body": [
+      "func ${1:name}(${2:params}) (${3:result}, error) {",
+      "\t$0",
+      "\treturn ${4:result}, nil",
+      "}"
+    ],
+    "description": "Go function returning error"
+  },
+  "error wrap": {
+    "prefix": "errwrap",
+    "body": "fmt.Errorf(\"${1:context}: %w\", ${2:err})",
+    "description": "Go error wrapping"
+  },
+  "defer function": {
+    "prefix": "defer",
+    "body": [
+      "defer func() {",
+      "\tif err := recover(); err != nil {",
+      "\t\t${1:// handle panic}",
+      "\t}",
+      "}()"
+    ],
+    "description": "Go defer with panic recovery"
+  },
+  "channel select": {
+    "prefix": "select",
+    "body": [
+      "select {",
+      "\tcase ${1:msg} := <-${2:ch}:",
+      "\t\t$3",
+      "\tdefault:",
+      "\t\t$0",
+      "}"
+    ],
+    "description": "Go channel select statement"
+  },
+  "goroutine": {
+    "prefix": "go",
+    "body": "go func(${1:params}) {\n\t$0\n}(${2:args})",
+    "description": "Go goroutine"
+  },
+  "struct with tags": {
+    "prefix": "structtags",
+    "body": [
+      "type ${1:StructName} struct {",
+      "\t${2:Field} ${3:string} `json:\"${4:field}\" db:\"${5:field}\"`",
+      "\t$0",
+      "}"
+    ],
+    "description": "Go struct with JSON and DB tags"
+  },
+  "interface": {
+    "prefix": "interface",
+    "body": [
+      "type ${1:InterfaceName} interface {",
+      "\t${2:Method}(${3:params}) ${4:return}",
+      "\t$0",
+      "}"
+    ],
+    "description": "Go interface definition"
+  }
+}

@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# 背景图目录和软链接定义
+BACKGROUNDS_DIR="$HOME/.config/omarchy/current/theme/backgrounds/"
+CURRENT_BACKGROUND_LINK="$HOME/.config/omarchy/current/background"
+
+# 获取背景图片列表
+mapfile -d '' -t BACKGROUNDS < <(find -L "$BACKGROUNDS_DIR" -type f -print0 | sort -z)
+TOTAL=${#BACKGROUNDS[@]}
+
+if [[ $TOTAL -eq 0 ]]; then
+    notify-send "No background was found for theme" -t 2000
+    exit 1
+fi
+
+# 获取当前背景路径（通过软链接）
+if [[ -L "$CURRENT_BACKGROUND_LINK" ]]; then
+    CURRENT_BACKGROUND=$(readlink "$CURRENT_BACKGROUND_LINK")
+else
+    CURRENT_BACKGROUND=""
+fi
+
+# 计算下一张图片的索引
+INDEX=-1
+for i in "${!BACKGROUNDS[@]}"; do
+    if [[ "${BACKGROUNDS[$i]}" == "$CURRENT_BACKGROUND" ]]; then
+        INDEX=$i
+        break
+    fi
+done
+
+if [[ $INDEX -eq -1 ]]; then
+    NEW_BACKGROUND="${BACKGROUNDS[0]}"
+else
+    NEXT_INDEX=$(((INDEX + 1) % TOTAL))
+    NEW_BACKGROUND="${BACKGROUNDS[$NEXT_INDEX]}"
+fi
+
+# 1. 更新软链接 (保留原始逻辑)
+ln -nsf "$NEW_BACKGROUND" "$CURRENT_BACKGROUND_LINK"
+
+# 2. 使用 swww 切换壁纸 (带动画效果)
+# 检查 swww-daemon 是否运行，如果没有则启动它
+if ! pgrep -x "swww-daemon" > /dev/null; then
+    swww-daemon &
+    sleep 0.5
+fi
+
+# 执行切换 (grow 动画从右上角展开)
+swww img "$NEW_BACKGROUND" --transition-type grow --transition-pos top-right --transition-duration 1.5
+
+# 3. 联动 Pywal 提取颜色
+wal -i "$NEW_BACKGROUND"
+
+# 4. 刷新 SwayNC 通知中心
+swaync-client -R
+
+# 5. 确保不再运行旧的 swaybg (可选)
+pkill -x swaybg

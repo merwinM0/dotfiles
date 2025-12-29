@@ -1,0 +1,67 @@
+[language-server.jdtls]
+command = "java"
+args = [
+  "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+  "-Dosgi.bundles.defaultStartLevel=4",
+  "-Declipse.product=org.eclipse.jdt.ls.core.product",
+  "-Dlog.level=ALL",
+  "-noverify",
+  "-Xmx1G",
+  "-jar", "/home/mo/Code/XM/Linux/jdtls/plugins/org.eclipse.equinox.launcher_*.jar",
+  "-configuration", "/home/mo/Code/XM/Linux/jdtls/config_linux",
+  "-data",    "/home/mo/Code/XM/Linux/jdtls/workspace"
+]
+
+[[language]]
+name = "java"
+language-servers = ["jdtls"]
+
+[language-server.ts]
+command = "typescript-language-server"
+args = ["--stdio"]
+
+[[language]]
+name = "javascript"
+language-servers = ["ts"]
+
+[[language]]
+name = "typescript"
+language-servers = ["ts"]
+
+
+[[language]]
+name = "python"
+language-servers = ["ty"]
+
+[language-server.ty]
+command = "ty"
+args = ["server"]
+
+[language-server.ty.config]
+inlayHints.callArgumentNames = false
+experimental.rename = true
+experimental.autoImport = true
+
+
+[[language]]
+name = "go"
+language-servers = ["gopls"]
+formatter = { command = "gofumpt" }
+
+
+
+# ~/.config/helix/languages.toml
+
+[[language]]
+name = "csv"
+file-types = ["csv"]
+scope = "source.csv"
+
+#============================hx-lsp============================
+[language-server.hx-lsp]
+command = "hx-lsp"
+
+#============================HTML============================
+[[language]]
+name = "html"
+language-servers = ["superhtml", "hx-lsp"]

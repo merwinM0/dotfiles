@@ -1,0 +1,63 @@
+/* ~/.config/swayosd/style.css */
+
+/* OSD 容器整体样式 */
+window {
+  background: rgba(43, 51, 62, 0.5);
+  border-radius: 18px;
+  border: 1px solid rgba(205, 214, 244, 0.1);
+  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.37);
+  padding: 3px 5px;
+  margin: 10px;
+  backdrop-filter: blur(10px);
+}
+
+/* 布局容器，恢复为水平排列 */
+box {
+  spacing: 15px;
+  orientation: horizontal;
+}
+
+/* 进度条容器 (恢复为水平的) */
+.progressbar {
+  background-color: rgba(24, 24, 37, 0.6);
+  border-radius: 10px;
+  min-height: 12px;
+  min-width: 200px;
+}
+
+/* 进度条填充部分 (从左到右填充) */
+.progressbar progress {
+  /* --- 硬色块风格 --- */
+  background: linear-gradient(90deg, #f38ba8 33%, #89b4fa 33%, #89b4fa 66%, #a6e3a1 66%);
+  border-radius: 8px;
+  min-width: 8px;
+  transition: transform 0.2s ease-in-out;
+  transform-origin: left center;
+}
+
+/* 音量/亮度图标 */
+image {
+  color: #cdd6f4;
+  margin-right: 15px;
+  font-size: 24px;
+}
+
+/* 静音时的图标样式 */
+.muted image {
+  color: #f38ba8;
+}
+
+/* 静音时的进度条样式 --- 也换成硬色块风格 --- */
+.muted .progressbar progress {
+  /* 静音时使用灰色硬色块 */
+  background: linear-gradient(90deg, #988ba2 33%, #6e6c7e 33%, #6e6c7e 66%, #585b70 66%);
+}
+
+/* 音量百分比文字 */
+label {
+  color: #cdd6f4;
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 12px;
+  min-width: 45px;
+}
