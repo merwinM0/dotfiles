@@ -1,7 +1,6 @@
 @import url("../../.cache/wal/colors-waybar.css");
 
 
-/* === 全局设置：适配白色壁纸 === */
 * {
   border: none;
   border-radius: 0;
@@ -11,7 +10,6 @@
   min-height: 0;
   margin: 1px;
   padding: 0;
-  /* 默认文字改用深色，以适应白色壁纸 */
   color: @color15;
 
   /* 使用 @background 或黑/白色作为边框色，增加对比度 */
@@ -34,8 +32,8 @@ window#waybar {
 .modules-right {
   background: rgba(247, 248, 250, 0.2);
   /* 极淡的黑色透明，在白底上形成层次感 */
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1.5px solid rgba(0, 0, 0, 0.7);
   /* 极淡的边框代替阴影 */
   border-radius: 18px;
   padding: 4px 14px;
@@ -140,12 +138,12 @@ window#waybar {
 
 /* === 悬浮提示框适配白底 === */
 tooltip {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #dce0e8;
+  background: rgba(247, 248, 250, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.7);
   border-radius: 12px;
   box-shadow: none;
 }
 
 tooltip label {
-  color: #4c4f69;
+  color: @color15;
 }
