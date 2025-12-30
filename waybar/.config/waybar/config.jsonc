@@ -75,7 +75,7 @@
   },
   "cpu": {
     "interval": 5,
-    "format": "✮",
+    "format": "◙",
     "on-click": "omarchy-launch-or-focus-tui btop"
   },
   "clock": {
@@ -104,7 +104,7 @@
     "on-click": "omarchy-launch-wifi"
   },
   "battery": {
-    "format": "{capacity}% {icon}",
+    "format": "{icon} {capacity}%",
     "format-discharging": "{icon}",
     "format-charging": "{icon}",
     "format-plugged": "",

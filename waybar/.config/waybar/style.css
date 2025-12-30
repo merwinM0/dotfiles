@@ -87,7 +87,7 @@ window#waybar {
 #clock,
 #tray,
 #custom-notification {
-  padding: 0 12px;
+  padding: 0 6px;
   /* 增加每个模块的间距，使右边栏拉长 */
 }
 

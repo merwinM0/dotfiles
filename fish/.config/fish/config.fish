@@ -15,6 +15,9 @@ alias ca='cargo'
 alias gol='go build -ldflags="-s -w" .'
 alias p='posting'
 alias ll='zellij a a'
+# alias l='ls -a'
+# alias l='eza -1  --color=always --icons --group-directories-first'
+alias l='eza -l --sort=extension --group-directories-first'
 
 ### --- 4. 环境变量 (PATH) ---
 # Fish 推荐使用 fish_add_path，它会自动去重且处理路径顺序
