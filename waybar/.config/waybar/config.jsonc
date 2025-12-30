@@ -19,8 +19,30 @@
     "network",
     "pulseaudio",
     "cpu",
-    "battery"
+    "battery",
+    "custom/notification" // 1. 在这里添加了通知图标
   ],
+  // --- 新增: SwayNC 通知模块配置 ---
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "<span foreground='red'><sup></sup></span>",
+      "none": "",
+      "dnd-notification": "<span foreground='red'><sup></sup></span>",
+      "dnd-none": "",
+      "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+      "inhibited-none": "",
+      "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+      "dnd-inhibited-none": ""
+    },
+    "return-type": "json",
+    "exec-propagate--once": true,
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
   "hyprland/workspaces": {
     "on-click": "activate",
     "format": "{icon}",
@@ -51,14 +73,6 @@
     "on-click-right": "xdg-terminal-exec",
     "tooltip-format": "Omarchy Menu\n\nSuper + Alt + Space"
   },
-  // "custom/update": {
-  //   "format": "",
-  //   "exec": "omarchy-update-available",
-  //   "on-click": "omarchy-launch-floating-terminal-with-presentation omarchy-update",
-  //   "tooltip-format": "Omarchy update available",
-  //   "signal": 7,
-  //   "interval": 3600
-  // },
   "cpu": {
     "interval": 5,
     "format": "✮",

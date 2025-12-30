@@ -1,6 +1,7 @@
-/* @import "../omarchy/current/theme/waybar.css"; */
+@import url("../../.cache/wal/colors-waybar.css");
 
-/* === 全局重置 === */
+
+/* === 全局设置：适配白色壁纸 === */
 * {
   border: none;
   border-radius: 0;
@@ -10,8 +11,15 @@
   min-height: 0;
   margin: 1px;
   padding: 0;
-  /* 设定默认字体颜色为浅色 */
-  color: #cdd6f4;
+  /* 默认文字改用深色，以适应白色壁纸 */
+  color: @color15;
+
+  /* 使用 @background 或黑/白色作为边框色，增加对比度 */
+  text-shadow:
+    -1px -1px 0 @background,
+    1px -1px 0 @background,
+    -1px 1px 0 @background,
+    1px 1px 0 @background;
 }
 
 /* === Waybar 主窗口 === */
@@ -20,168 +28,124 @@ window#waybar {
   padding: 4px 6px;
 }
 
-/* === 核心：高度拟真的“光学”玻璃效果 === */
+/* === 模块外壳：移除阴影，改为轻量深色透明背景 === */
 .modules-left,
 .modules-center,
 .modules-right {
-  /* 1. 模拟玻璃：极低透明度的白色背景 */
-  background: rgba(255, 255, 255, 0.12);
-  /* 非常淡的白色，不透明度只有 0.08 */
-
-  /* 2. 尝试基础模糊：如果仍然无法显示，请将此行移除 */
-  -webkit-backdrop-filter: blur(12px);
-
-  /* 3. 复杂 box-shadow：模仿玻璃的厚度、内侧光晕和反射 */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    /* 玻璃内侧顶部高光 */
-    inset 0 -1px 0 rgba(255, 255, 255, 0.18),
-    /* 玻璃内侧底部阴影 */
-    inset 6px 6px 16px rgba(255, 255, 255, 0.05),
-    /* 侧面/深度光晕 */
-    0 10px 28px rgba(0, 0, 0, 0.35);
-  /* 外部浮动阴影 */
-
-  /* 4. 移除边框，完全依赖 box-shadow 勾勒边缘 */
-  border: none;
-
-  /* 5. 调整圆角和布局 */
+  background: rgba(247, 248, 250, 0.2);
+  /* 极淡的黑色透明，在白底上形成层次感 */
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  /* 极淡的边框代替阴影 */
   border-radius: 18px;
-  padding: 4px 12px;
+  padding: 4px 14px;
   margin: 0 4px;
+  box-shadow: none;
+  /* 彻底移除阴影 */
+}
+
+/* 特别增加右侧区块的视觉长度 */
+.modules-right {
+  padding-left: 25px;
+  padding-right: 25px;
+  margin-right: 10px;
 }
 
 /* === 工作区 (Workspaces) === */
 #workspaces {
-  margin: 0 2px;
+  margin: 0 4px;
 }
 
 #workspaces button {
   all: initial;
   font-family: inherit;
-  font-size: 14px;
-  color: #a6adc8;
-  padding: 0 6px;
+  font-size: 16px;
+  color: #585b70;
+  padding: 0 8px;
   margin: 0 2px;
-  border-radius: 8px;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all 0.2s ease;
 }
 
-/* 鼠标悬停效果 */
+/* 悬停效果 */
 #workspaces button:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
+  color: #11111b;
 }
 
-#workspaces button.empty {
-  color: rgba(255, 255, 255, 0.2);
-}
-
+/* 选中状态：确保实心效果 */
 #workspaces button.active {
-  /* 使用高亮色，但保持低透明度，让玻璃效果更突出 */
-  background: rgba(137, 180, 250, 0.9);
   color: #1e1e2e;
+  /* 选中的圆点颜色更深 */
+  background: transparent;
   font-weight: bold;
-  padding: 0 12px;
-  box-shadow: 0 2px 8px rgba(137, 180, 250, 0.3);
-  min-width: 20px;
+  /* 你的 config 里 active 已经是 ●，这里通过加粗确保视觉效果 */
 }
 
-/* === 模块通用样式 === */
+/* === 模块通用间隔 === */
 #cpu,
-#memory,
 #battery,
 #network,
 #pulseaudio,
-#clock {
-  padding: 0 8px;
-  /* 文字阴影增加立体感 */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+#bluetooth,
+#clock,
+#tray,
+#custom-notification {
+  padding: 0 12px;
+  /* 增加每个模块的间距，使右边栏拉长 */
 }
 
-/* 悬浮提示框 (Tooltip) 也采用玻璃样式 */
-tooltip {
-  background: rgba(20, 20, 30, 0.8);
-  /* 再次尝试基础模糊 */
-  -webkit-backdrop-filter: blur(12px);
-
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 10px 14px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-}
-
-tooltip label {
-  color: #cdd6f4;
-  font-family: inherit;
-  font-size: 14px;
-}
-
-/* (其他模块样式保持不变，以确保完整性) */
+/* === 保留特定图标颜色 (不改动颜色逻辑) === */
 #custom-omarchy {
-  color: #89b4fa;
+  color: @color15;
+  /* Omarchy 图标使用明显的蓝色 */
   font-size: 20px;
   padding-right: 12px;
   margin-right: 8px;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #custom-screenrecording-indicator {
-  color: #f38ba8;
+  color: #d20f39;
+  /* 红色录屏 */
   padding: 0 10px;
-  margin-right: 5px;
-  background: rgba(243, 139, 168, 0.15);
-  border-radius: 8px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
-#custom-screenrecording-indicator.active {
-  opacity: 1;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(243, 139, 168, 0.4);
-  }
-
-  70% {
-    box-shadow: 0 0 0 6px rgba(243, 139, 168, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(243, 139, 168, 0);
-  }
-}
-
-#custom-update {
-  color: #fab387;
-}
 
 #battery.charging,
 #battery.plugged {
-  color: #a6e3a1;
+  color: #40a02b;
+  /* 绿色充电 */
 }
 
 #battery.critical:not(.charging) {
-  color: #f38ba8;
-  animation: blink 1s linear infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.5;
-  }
+  color: #d20f39;
+  /* 红色低电量警告 */
 }
 
 #network.disconnected {
-  color: #f38ba8;
+  color: #d20f39;
+}
+
+#pulseaudio.muted {
+  color: #7c7f93;
+}
+
+/* === 托盘与展开图标 === */
+#custom-expand-icon {
+  color: @color15;
+  padding-right: 5px;
 }
 
 #tray {
   margin-right: 4px;
 }
 
-.hidden {
-  opacity: 0;
+/* === 悬浮提示框适配白底 === */
+tooltip {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #dce0e8;
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+tooltip label {
+  color: #4c4f69;
 }

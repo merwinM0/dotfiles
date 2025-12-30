@@ -49,15 +49,21 @@ fi
 
 # 3. 异步切换壁纸 (立即开始动画，不等待动画结束)
 swww img "$NEW_BACKGROUND" \
-    --transition-type grow \
-    --transition-pos top-right \
-    --transition-duration 1.0 & # 缩短至1.0秒，体感更干脆
+    --transition-type fade\
+    --transition-fps 120\
+    --transition-duration 2.0 & 
 
-# 4. 异步执行 Pywal 和 刷新通知中心
-# 使用括号 () & 将这两个耗时操作丢进后台并行运行
+
+# 4. 异步执行 Pywal、刷新通知中心并重启 Waybar
 (
-    wal -i "$NEW_BACKGROUND" -q   # -q 静默模式减少IO消耗
-    swaync-client -R              # 颜色生成后立即刷新界面
+    # 生成新的颜色配置
+    wal -i "$NEW_BACKGROUND" -q   
+
+    # 颜色生成后，立即刷新通知中心
+    swaync-client -R              
+
+    pkill -USR2 waybar
+
 ) &
 
 exit 0
