@@ -61,7 +61,7 @@ swww img "$NEW_BACKGROUND" \
 
     # 颜色生成后，立即刷新通知中心
     swaync-client -R              
-
+    pkill -USR1 kitty
     pkill -USR2 waybar
 
 ) &
