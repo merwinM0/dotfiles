@@ -6,6 +6,8 @@ inherits = "catppuccin_macchiato"
 "ui.statusline.inactive"    = { fg = "default", bg = "default" }
 "ui.statusline.normal"      = { fg = "default", bg = "default" }
 "ui.statusline.insert"      = { fg = "default", bg = "default" }
+"ui.linenr" = "#FAF0F0"
+"ui.linenr.selected" = "#CF919C"
 # "ui.statusline.select"      = { fg = "default", bg = "default" }
 # "ui.popup"                  = { fg = "default", bg = "default" }
 "ui.menu"                   = { fg = "default", bg = "default" }
