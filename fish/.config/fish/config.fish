@@ -69,3 +69,5 @@ bind \ez 'helix_smart; commandline -f repaint'
 bind \em 'gitui; commandline -f repaint'
 bind \ex 'y; commandline -f repaint'
 # end
+
+set -g fish_greeting
