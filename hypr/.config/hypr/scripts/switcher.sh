@@ -15,17 +15,21 @@
 # fi
 
 
-#!/bin/sh
-
-#!/bin/sh
-
+#!/bin/bash
 BUILDIN_DISPLAY_NAME="eDP-1"
 
-# 逻辑：只看 eDP-1 的 disabled 状态，不管 HDMI 在不在
+# 检查HDMI是否连接
+HDMI_CONNECTED=$(hyprctl monitors all | grep -c "HDMI")
+
+# 如果没有HDMI，直接确保内屏开启
+if [ "$HDMI_CONNECTED" -eq 0 ]; then
+    hyprctl keyword monitor "$BUILDIN_DISPLAY_NAME, 2560x1600@120, auto, 1.6"
+    exit 0
+fi
+
+# 有HDMI的情况下，按原逻辑切换
 if hyprctl monitors all | grep "$BUILDIN_DISPLAY_NAME" -A 20 | grep -q "disabled: true"; then
-    # 状态：内屏关闭 -> 开启它（恢复笔记本屏幕）
     hyprctl keyword monitor "$BUILDIN_DISPLAY_NAME, 2560x1600@120, auto, 1.6"
 else
-    # 状态：内屏开启 -> 关闭它（切换到 HDMI）
     hyprctl keyword monitor "$BUILDIN_DISPLAY_NAME, disable"
 fi
