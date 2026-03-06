@@ -71,3 +71,6 @@ bind \ex 'y; commandline -f repaint'
 # end
 
 set -g fish_greeting
+
+# uv
+fish_add_path "/home/mo/.local/share/../bin"
