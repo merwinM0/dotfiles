@@ -19,13 +19,8 @@ alias ll='zellij a a'
 # alias l='eza -1  --color=always --icons --group-directories-first'
 alias l='eza -l --sort=extension --group-directories-first'
 
-### --- 4. 环境变量 (PATH) ---
-# Fish 推荐使用 fish_add_path，它会自动去重且处理路径顺序
 fish_add_path /usr/local/bin
-# 对应原本的 . "$HOME/.cargo/env"
 fish_add_path "$HOME/.cargo/bin"
-
-### --- 5. 函数定义 (Functions) ---
 
 # Helix 智能启动
 function helix_smart
