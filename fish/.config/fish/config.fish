@@ -18,6 +18,7 @@ alias ll='zellij a a'
 # alias l='ls -a'
 # alias l='eza -1  --color=always --icons --group-directories-first'
 alias l='eza -l --sort=extension --group-directories-first'
+alias kimg='kitty +kitten icat'
 
 fish_add_path /usr/local/bin
 fish_add_path "$HOME/.cargo/bin"
