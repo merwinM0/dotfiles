@@ -1,6 +1,6 @@
 # A TOML linter such as https://taplo.tamasfe.dev/ can use this schema to validate your config.
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
-"$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
+# "$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
 
 [mgr]
 
@@ -228,12 +228,12 @@ keymap = [
     { on = [
         "g",
         "m",
-    ], run = "cd ~/mow", desc = "Go ~/mow" },
+    ], run = "cd ~/mon", desc = "Go ~/mon" },
 
     { on = [
         "g",
         "d",
-    ], run = "cd ~/Downloads", desc = "Go ~/Downloads" },
+    ], run = "cd ~/下载", desc = "Go ~/下载" },
     { on = [
         "g",
         "<Space>",

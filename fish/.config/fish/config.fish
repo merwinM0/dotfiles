@@ -1,12 +1,15 @@
+# source /usr/share/cachyos-fish-config/cachyos-config.fish
+
+# overwrite greeting
+# potentially disabling fastfetch
+#function fish_greeting
+#    # smth smth
+#end
+
 ### --- 1. 基础环境检查 ---
 if not status is-interactive
     exit
 end
-
-### --- 2. 兼容性提示 ---
-# 注意：omarchy 的 bash 脚本无法在 fish 中 source。
-# 如果 omarchy 有 fish 版本，请 source fish 版本：
-# [ -f ~/.local/share/omarchy/default/fish/rc ] && source ~/.local/share/omarchy/default/fish/rc
 
 ### --- 3. 别名 (Aliases) ---
 alias mm='zellij'
@@ -17,11 +20,11 @@ alias p='posting'
 alias ll='zellij a a'
 # alias l='ls -a'
 # alias l='eza -1  --color=always --icons --group-directories-first'
-alias l='eza -l --sort=extension --group-directories-first'
+alias ls='eza -l --sort=extension --group-directories-first'
 alias kimg='kitty +kitten icat'
 
-fish_add_path /usr/local/bin
-fish_add_path "$HOME/.cargo/bin"
+# fish_add_path /usr/local/bin
+# fish_add_path "$HOME/.cargo/bin"
 
 # Helix 智能启动
 function helix_smart
@@ -69,4 +72,15 @@ bind \ex 'y; commandline -f repaint'
 set -g fish_greeting
 
 # uv
-fish_add_path "/home/mo/.local/share/../bin"
+# fish_add_path "/home/mo/.local/share/../bin"
+
+# Fcitx5 环境变量
+set -gx GTK_IM_MODULE fcitx
+set -gx QT_IM_MODULE fcitx
+set -gx XMODIFIERS @im=fcitx
+
+set -gx PATH ~/.local/bin $PATH
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH

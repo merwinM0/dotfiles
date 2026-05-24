@@ -1,5 +1,5 @@
 # theme = "catppuccin_macchiato"
-theme = "transparent"
+theme = "catppuccin_frappe"
 
 
 
@@ -110,6 +110,5 @@ del = "normal_mode"
 
 [keys.insert.i]
 i = "normal_mode" 
-
 
 

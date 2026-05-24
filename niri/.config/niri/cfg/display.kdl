@@ -1,0 +1,19 @@
+// ────────────── Output Configuration ──────────────
+// You can run `niri msg outputs` to get the correct name for your displays.
+// You will have to remove "/-" and edit it before it takes effect.
+// https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
+
+// /- output "DP-1" {
+//     mode "2560x1440@359.979" // Set resolution and refresh rate
+//     scale 1 // No scaling (use 2 for HiDPI)
+// }
+
+output "HDMI-A-1" {
+    mode "2560x1440@143.995"   // 使用你显示器支持的最高刷新率
+    scale 1.0                   // 外接 2K 屏幕不用缩放
+}
+
+output "eDP-1" {
+    mode "2560x1600@120.001"   // 内屏保持原样
+    scale 1.5                   // 你当前设置的缩放，保持即可
+}
