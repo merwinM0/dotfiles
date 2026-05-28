@@ -84,3 +84,6 @@ set -gx PATH ~/.local/bin $PATH
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
+
+# Pi
+fish_add_path "/home/mo/.local/share/pi-node/node-v22.22.3-linux-x64/bin"
