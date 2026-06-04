@@ -28,6 +28,8 @@
   `uv tool install posting`
 - `sudo pacman -S fcitx5-im fcitx5-chinese-addons` — 输入法核心组件与中文支持
 - `sudo pacman -S qt5-base qt5-wayland` — XWayland 兼容层（允许 X11 应用在 Wayland 下运行）
+-  rustdesk-server-bin
+-  rustdesk-bin
 
 > **XWayland** 是一个**兼容层**，允许原本为 X11 编写的应用程序在 Wayland 环境下正常运行。
 
@@ -180,7 +182,63 @@ stow --verbose nvim
 stow -v nvim                # 简写，可以 -vv 更详细
 ```
 
+## rustdesk远程控屏
 
+下载rustdesk-bin和rustdesk-server-bin
 
+####  启动服务
 
+```bash
+# 查看包安装了哪些文件
+pacman -Ql rustdesk-server-bin
+
+#先查看服务文件内容（确认配置）
+cat /usr/lib/systemd/system/rustdesk-server-hbbs.service
+cat /usr/lib/systemd/system/rustdesk-server-hbbr.service
+
+# 启动
+sudo systemctl start rustdesk-server-hbbs
+sudo systemctl start rustdesk-server-hbbr
+
+# 设置开机自启
+sudo systemctl enable rustdesk-server-hbbs
+sudo systemctl enable rustdesk-server-hbbr
+
+# 查看状态
+sudo systemctl status rustdesk-server-hbbs
+sudo systemctl status rustdesk-server-hbbr
+```
+
+#### 配置 hbbs 的 IP 参数
+
+修改服务文件（推荐）
+
+```bash
+# 编辑 hbbs 服务
+sudo -E EDITOR=helix systemctl edit --full rustdesk-server-hbbs
+
+#找到 ExecStart= 这一行，原本可能是：
+ExecStart=/opt/rustdesk-server/hbbs
+
+#改成（ip addr show 查看实际的ip并替换）：
+#服务文件默认可能没有 -r 参数，需要手动添加你的局域网 IP。
+ExecStart=/opt/rustdesk-server/hbbs -r 192.168.1.123:21117
+#21117 是 RustDesk 服务器中继服务（hbbr）的默认端口。
+
+```
+
+重新加载并重启
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart rustdesk-server-hbbs
+sudo systemctl restart rustdesk-server-hbbr
+```
+
+获取 Key
+
+```bash
+# Key 文件在 /opt/rustdesk-server/data/ 目录下
+sudo cat /opt/rustdesk-server/data/id_ed25519.pub
+```
 
