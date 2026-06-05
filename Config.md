@@ -242,3 +242,30 @@ sudo systemctl restart rustdesk-server-hbbr
 sudo cat /opt/rustdesk-server/data/id_ed25519.pub
 ```
 
+## 蓝牙配置
+
+### 1. 检查蓝牙硬件是否存在
+
+```bash
+lsusb | grep -i bluetooth
+```
+
+### 2. 检查蓝牙服务状态
+
+```bash
+systemctl status bluetooth
+```
+
+### 3.检查蓝牙控制器状态
+
+```
+bluetoothctl show
+```
+
+状态是 **`Powered: no`** 和 **`PowerState: off-blocked`**的话这说明蓝牙被软封锁（soft blocked）了，执行以下命令启用：
+
+```
+rfkill unblock bluetooth
+
+```
+
