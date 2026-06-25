@@ -56,10 +56,20 @@ celluloid = [
     { run = 'celluloid %s', orphan = true, block = false, desc = "celluliod", for = "unix" },
 ]
 
+# timg = [
+#    { run = 'timg %s', orphan = true, block = true, for = "unix" },
+# ]
+
+timg = [
+  { run = 'ya emit quit; sleep 0.05; timg %s', block = true, for = "unix" },
+]
+
 [open]
 rules = [
     # Mp4
     { url = "*.mp4", use = [ "celluloid" ] },
+    #img
+    { url = "*.png",use = ["timg"]},
     # Doc
     { url = "application/doc", use = [ "Doxx" ] },
     # Docx

@@ -269,3 +269,66 @@ rfkill unblock bluetooth
 
 ```
 
+# Arch Linux 《博德之门3》 MOD 安装指南
+
+本指南使用 `protontricks` 在游戏的 Proton 容器（Prefix）中运行 Windows 版 **BG3 Mod Manager (BG3MM)**，这是目前在 Linux 下管理《博德之门3》MOD 最稳定、兼容性最好的方案。
+
+## 🛠️ 第一步：系统环境准备
+
+在 Arch Linux 终端中安装必要组件 `protontricks`（用于让 Windows 程序识别 Steam 游戏瓶）：
+
+Bash
+
+```
+sudo pacman -S protontricks
+```
+
+## 💾 第二步：下载核心软件与依赖
+
+你需要前往以下网站下载管理工具及必备环境：
+
+### 1. 下载 BG3 Mod Manager
+
+- **官方下载地址**：[GitHub - LaughingLeader/BG3ModManager](https://github.com/LaughingLeader/BG3ModManager)
+- **操作**：下载最新版本的 `.zip` 压缩包，并解压到你习惯的目录（例如 `~/Games/BG3MM/`）。
+
+### 2. 下载 .NET Desktop Runtime 8.0（关键环境）
+
+BG3MM 是 Windows 桌面程序，需要微软的桌面运行时支持。**请勿使用 winetricks 脚本安装，直接下载微软官方独立安装包：**
+
+- **官方下载直链**：[Microsoft .NET Desktop Runtime 8.0.x (x64)](https://www.google.com/search?q=https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.12-windows-x64-installer)
+
+## ⚙️ 第三步：安装环境与启动管理器
+
+### 1. 安装 .NET 桌面环境
+
+打开终端，切换到你下载微软 `.exe` 安装包的目录，将其安装进《博德之门3》的 Steam 容器中（游戏 AppID 为 `1086940`）：
+
+Bash
+
+```
+protontricks-launch --appid 1086940 windowsdesktop-runtime-8.0.12-win-x64.exe
+```
+
+*在弹出的标准 Windows 安装界面中，一路点击 **Install** 直至完成。*
+
+### 2. 启动 BG3 Mod Manager
+
+使用以下命令启动管理器（请将路径替换为你实际解压的路径）：
+
+Bash
+
+```
+protontricks-launch --appid 1086940 /path/to/BG3ModManager.exe
+```
+
+> 💡 **游戏路径确认**：打开软件后，点击 `Settings` -> `Preferences`，确保路径正确（通常会自动识别）：
+>
+> - **Data Path**: `Z:\home\你的用户名\.local\share\Steam\steamapps\common\Baldur's Gate 3\Data\`
+> - **Executable Path**: `Z:\home\你的用户名\.local\share\Steam\steamapps\common\Baldur's Gate 3\bin\bg3.exe`
+
+
+
+
+
+## zathura
