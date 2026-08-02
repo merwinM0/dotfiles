@@ -71,15 +71,7 @@ bind \ep pi
 bind \ei 'select_pac_or_aur; commandline -f repaint'
 # end
 
-# 交互选择 pac 或 aur (Alt+i)
-function select_pac_or_aur
-    echo 'Select package manager:'
-    set -l selection (printf 'pac\naur' | fzf --height=~6 --border --cycle --no-input --bind 'w:up,s:down')
-    if test -n "$selection"
-        commandline -r "$selection "
-        commandline -f execute
-    end
-end
+# select_pac_or_aur 已移至 functions/select_pac_or_aur.fish (Alt+i)
 
 set -g fish_greeting
 
@@ -99,3 +91,5 @@ set --export PATH $BUN_INSTALL/bin $PATH
 
 # Pi
 fish_add_path "/home/mo/.local/share/pi-node/node-v22.22.3-linux-x64/bin"
+
+# [ -s "/home/mo/.jabba/jabba.fish" ]; and source "/home/mo/.jabba/jabba.fish"
