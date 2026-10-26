@@ -1,3 +1,60 @@
-.pi/.pi/agent/sessions
-.pi/.pi/agent/auth.json
-.pi/.pi/agent/auth.json
+# Pi: keep reusable instructions, skills and themes only.
+# Ignore auth, personal settings, model/MCP configs, sessions, crash reports
+# and other runtime files by default, including newly introduced ones.
+/.pi/.pi/agent/*
+!/.pi/.pi/agent/Agent.md
+!/.pi/.pi/agent/AGENTS.md
+!/.pi/.pi/agent/skills/
+!/.pi/.pi/agent/themes/
+!/.pi/.pi/agent/npm/
+/.pi/.pi/agent/npm/*
+!/.pi/.pi/agent/npm/.gitignore
+
+# Fish universal variables may contain private paths and exported credentials.
+/fish/.config/fish/fish_variables
+
+# Local configs containing personal home/project paths.
+# Keep them local until sanitized; ignoring does not change their contents.
+/fish/.config/fish/config.fish
+/helix/.config/helix/languages.toml
+/zellij/.config/zellij/config.kdl
+
+# Local environment and credential files.
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+.git-credentials
+.netrc
+.npmrc
+.pypirc
+auth.json
+credentials.json
+.ssh/
+.gnupg/
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Shell history and other local activity.
+.bash_history
+.zsh_history
+.python_history
+.lesshst
+fish_history
+cookies.txt
+.cache/
+*.log
+
+# Backups and editor swap files may retain sensitive content.
+*.bak
+*.bak.*
+*.swp
+*.swo
+*~

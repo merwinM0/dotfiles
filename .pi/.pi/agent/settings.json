@@ -1,7 +1,0 @@
-{
-  "lastChangelogVersion": "0.78.1",
-  "theme": "myTheme",
-  "defaultProvider": "deepseek",
-  "defaultModel": "deepseek-v4-flash",
-  "defaultThinkingLevel": "high"
-}

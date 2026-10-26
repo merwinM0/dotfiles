@@ -118,7 +118,8 @@ binds {
     // ─── Modes ───
     Mod+T                               { toggle-window-floating; }
     Mod+F                               { fullscreen-window; }
-    Mod+W                               { toggle-column-tabbed-display; }
+    // Mod+W                               { toggle-column-tabbed-display; }
+    Mod+W                               hotkey-overlay-title="Open Wechat" { spawn-sh "fish -c wechat"; }
 
     // ─── Screenshots ───
     CTRL+Shift+S                        { screenshot; }
