@@ -55,6 +55,10 @@ cookies.txt
 # Backups and editor swap files may retain sensitive content.
 *.bak
 *.bak.*
+*.backup
+*.backup.*
+*.obugs-backup
+*.obugs-backup.*
 *.swp
 *.swo
 *~

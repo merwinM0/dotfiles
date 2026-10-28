@@ -51,6 +51,26 @@ gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 niri msg windows
 ```
 
+### 亮青活动窗口边框
+
+配置文件：`niri/.config/niri/cfg/layout.kdl`。活动窗口的焦点边框使用亮青 `#8be9e1`，比原湖青更明亮，与 Fish / Yazi 的强调色一致；不改变原有线宽、布局、圆角或快捷键。
+
+```kdl
+layout {
+    focus-ring {
+        on
+        active-color "#8be9e1"
+    }
+}
+```
+
+以上仅展示配色片段，应放入现有的 `layout` 块，不要覆盖整个配置文件。修改后校验并重载：
+
+```bash
+niri validate -c ~/.config/niri/config.kdl
+niri msg action load-config-file
+```
+
 ---
 
 ## SDDM（登录管理器）
@@ -110,38 +130,104 @@ git push
 
 ---
 
-## Fish Shell 配色
+## Fish Shell 配色（亮青）
 
-### 基本颜色（亮色系）
+### Niri / Fish / Yazi / ls 统一亮色色板
 
-- `set -U fish_color_command brwhite`        # 命令为亮白色
-- `set -U fish_color_param brcyan`           # 参数为亮青色
-- `set -U fish_color_error brred`            # 错误为亮红色
-- `set -U fish_color_quote bryellow`         # 引号内容为亮黄色
-- `set -U fish_color_redirection brwhite`    # 重定向符号为亮白色
-- `set -U fish_color_end brgreen`            # 结束符（如 done, end）为亮绿色
-- `set -U fish_color_operator brcyan`        # 操作符为亮青色
-- `set -U fish_color_escape brblue`          # 转义符为亮蓝色
+以原青色系为基础整体提亮，使用真彩色而非终端的 `brcyan` / `brblue`。这里的「亮色」指更明亮的文字、图标和强调色，不是把桌面或终端换成白底主题。
 
-### Prompt 颜色（覆盖 Pure 主题）
+| 用途 | 色值 |
+| --- | --- |
+| 主强调色：亮青 | `#8be9e1` |
+| 辅助色：浅青 | `#bbf7ef` |
+| 次要信息：柔青 | `#a8d8d4` |
+| 正文：亮青白 | `#f1fffc` |
+| 亮色选中背景上的深青文字 | `#14353b` |
+| 注释、自动建议、分隔线 | `#9fbfbd` |
+| 成功、复制状态 | `#b8efcf` |
+| 警告、待处理状态 | `#ffe1a8` |
+| 错误、剪切状态 | `#ffb7c5` |
 
-- `set -U pure_color_primary brblue`         # 当前目录为亮蓝色
-- `set -U pure_color_success brgreen`        # 成功提示为亮绿色
-- `set -U pure_color_warning bryellow`       # 警告为亮黄色
-- `set -U pure_color_danger brred`           # 危险/错误为亮红色
-- `set -U pure_color_info brcyan`            # 信息为亮青色
-- `set -U pure_color_mute brblack`           # 次要信息为亮黑色（灰色）
-- `set -U pure_color_normal brwhite`         # 正常文字为亮白色
-- `set -U pure_color_light white`            # 亮色为纯白
+亮青背景搭配深青文字的对比度约为 **9.26:1**。终端原有深色/透明背景不变；深青仅用于亮色背景上的文字，错误和警告仍保留独立颜色。
 
-### Git 相关颜色
+### 配置与生效
 
-- `set -U pure_color_git_branch bryellow`    # Git 分支为亮黄色
-- `set -U pure_color_git_dirty brred`        # Git 脏状态为亮红色
+配色文件：`fish/.config/fish/conf.d/qing-theme.fish`。Fish 交互式启动时自动加载，无需改动含个人路径的 `config.fish`，也无需把本地 `fish_variables` 纳入 Git。
 
-### 自动补全颜色
+- 命令、操作符、当前目录、Git 分支使用亮青；普通文字使用亮青白。
+- 引号、次要提示和自动建议同步提亮；补全列表选中项为亮青底、深青字。
+- 同时设置默认 Fish、Pure 和内置 Git 提示符颜色，不安装或切换提示符。
 
-- `set -U fish_color_autosuggestion d0d0d0`
+在**当前 Fish 终端**执行以下命令立即刷新，新终端会自动加载：
+
+```fish
+source ~/.config/fish/conf.d/qing-theme.fish
+```
+
+该文件中的全局变量优先于旧的 universal 配色。以后应编辑该文件，不要只运行旧的 `set -U ... brblue`。Fish 十六进制颜色不带 `#`，例如：
+
+```fish
+set --global fish_color_command 8be9e1 --bold
+set --global fish_color_param f1fffc
+set --global fish_color_selection --background=8be9e1 14353b
+```
+
+### ls / eza 输出配色
+
+当前 `ls` 是 `eza -l --sort=extension --group-directories-first` 的别名，不能只修改 Fish 语法高亮来改变文件列表颜色。
+
+同一个配色文件导出 `LS_COLORS` 和 `EZA_COLORS`：
+
+- 目录、可执行文件和图标使用亮青，普通文件使用浅青。
+- 权限、大小、用户/组、日期等长列表字段也采用青色系。
+- 使用 `EZA_COLORS` 的 `reset` 清除内置扩展名配色，防止部分文件仍呈蓝紫色。
+- 断链、危险状态和 Git 冲突保留浅红色；需要注意的权限/状态保留暖黄色。
+- `LS_COLORS` 同时可供 GNU `ls --color=auto` 使用。
+
+重新 source 配色文件后直接运行 `ls` 即可，不改变现有排序和别名。
+
+---
+
+## Yazi 配色（亮青）
+
+配置文件：`yazi/.config/yazi/theme.toml`，使用 **Yazi 26.9.1** 的配置格式。
+
+- 保留透明背景，正文、目录、面板边框、次要文字和各状态指示器整体提亮。
+- 当前文件、活动标签和正常模式使用亮青底、深青字；选择模式使用浅青。
+- 语言/工具图标在保留大致色相的同时提亮，避免旧的暗色图标不清晰。
+- 光标行放在 `[indicator]`，模式指示器放在 `[mode]`，不使用旧的 `mgr.hovered`。
+
+退出并重新打开 Yazi 即可生效，无需重启桌面。文件操作快捷键不变。
+
+### 终端图片查看器：timg
+
+电脑已安装 **timg 1.6.3**，但系统版本依赖旧 FFmpeg 的 `libavformat.so.62` 等库，与当前 FFmpeg 不兼容，无法启动。
+
+本次复用了本机已有的 AUR 缓存源码，核对了 PKGBUILD 中的 SHA-256，并从上游 timg 1.6.3 源码构建**仅图片版本**，关闭 FFmpeg/视频解码依赖。没有额外下载其他 AUR 查看器，也没有替换、降级或乱建系统库软链接。
+
+- 图片专用二进制：`~/.local/libexec/timg-images`。
+- 便捷命令：`~/.local/bin/timg`，链接到上述二进制。
+- 系统的 `/usr/bin/timg` 保留不动；本地版本不负责视频，视频仍使用原来的 Celluloid。
+- 支持终端图形协议自动检测，包括 Foot 的 Sixel；不支持图形协议时可回退为 Unicode 彩色块。
+
+检查本地版本：
+
+```bash
+~/.local/bin/timg --version
+~/.local/bin/timg -I --frames=1 -- "图片.jpg"
+```
+
+Yazi 配置位于 `yazi/.config/yazi/yazi.toml`。`scripts/view-image.sh` 是兼容入口，实际由同目录的 `view-image.py` 负责终端输入与恢复，使用系统已有的 Python 3 标准库：
+
+- PNG、JPEG、WebP、GIF、BMP、TIFF、SVG、AVIF、ICO、QOI 等图片按 MIME/扩展名匹配 timg。
+- 选中图片按 **Enter** 或 **o** 查看，再按一次 **Enter** 直接返回 Yazi；正常看图时没有文字提示。
+- opener 使用 `%s1`，一次只打开当前/首张图片，不再逐张轮播多选列表。
+- 直接读取实际终端，兼容 CR/LF、Kitty/CSI-u 和 xterm 的 Enter 编码，忽略 Enter 松键事件。
+- 看图使用独立备用屏幕，返回时清除图像并恢复终端状态，避免 Sixel/图片残留遮挡 Yazi。
+- 不执行 `ya emit quit`，不关闭 Yazi。动图显示首帧，右侧预览仍由 Yazi 内置预览器负责。
+- 文件名作为独立参数传递，并使用 `--` 分隔选项，兼容空格、中文和以短横线开头的文件名。
+
+本次修改前的私有备份位于 `~/.local/state/dotfiles-theme-backups/`，不在 dotfiles 仓库内。
 
 ---
 

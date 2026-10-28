@@ -56,20 +56,18 @@ celluloid = [
     { run = 'celluloid %s', orphan = true, block = false, desc = "celluliod", for = "unix" },
 ]
 
-# timg = [
-#    { run = 'timg %s', orphan = true, block = true, for = "unix" },
-# ]
-
+# 一次显示当前/首张图片；无文字提示，按 Enter 直接返回 Yazi。
 timg = [
-  { run = 'ya emit quit; sleep 0.05; timg %s', block = true, for = "unix" },
+    { run = 'sh "$HOME/.config/yazi/scripts/view-image.sh" %s1', block = true, desc = "timg", for = "unix" },
 ]
 
 [open]
 rules = [
     # Mp4
     { url = "*.mp4", use = [ "celluloid" ] },
-    #img
-    { url = "*.png",use = ["timg"]},
+    # 图片：先按 MIME 匹配，再用扩展名覆盖 MIME 尚未识别时的情况。
+    { mime = "**/image/*", use = [ "timg" ] },
+    { url = "*.{png,PNG,jpg,JPG,jpeg,JPEG,webp,WEBP,gif,GIF,bmp,BMP,tif,TIF,tiff,TIFF,svg,SVG,avif,AVIF,ico,ICO,qoi,QOI}", use = [ "timg" ] },
     # Doc
     { url = "application/doc", use = [ "Doxx" ] },
     # Docx

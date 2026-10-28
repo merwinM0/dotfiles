@@ -1,232 +1,171 @@
-# 你自定义的 Yazi 主题配置文件
-# 配色风格：文件主色为白色，选中项背景为天蓝色
+#:schema https://yazi-rs.github.io/schemas/theme.json
+# 亮青主题（Yazi 26.9.1）：保留终端背景，整体提亮文字、强调色和图标。
+# 亮青 #8be9e1 / 浅青 #bbf7ef / 柔青 #a8d8d4 / 青白 #f1fffc
+# 深青 #14353b 仅用于亮色选中背景上的文字，以保持对比。
 
-# 如果你后续想使用现成的主题包（flavor），可以在这里配置
-# [flavor]
-# dark  = "catppuccin-mocha"   # 示例：深色主题包
-# light = "catppuccin-latte"   # 示例：浅色主题包
-
-# : 整体外观 {{{
 [app]
-overall = { bg = "reset" }
+overall = { fg = "#f1fffc", bg = "reset" }
 
-# : 文件管理器核心区 {{{
 [mgr]
-# 当前工作目录
-cwd = { fg = "#89b4fa" }
+cwd = { fg = "#8be9e1", bold = true }
+find_keyword  = { fg = "#ffe1a8", bold = true, underline = true }
+find_position = { fg = "#bbf7ef", bg = "reset", italic = true }
+symlink_target = { fg = "#a8d8d4", italic = true }
 
-# 光标悬停的文件 (实现“选中背景是天蓝色”的关键)
-hovered         = { bg = "#89b4fa", fg = "black" }  # 使用天蓝色背景，黑色字体以保证可读性
-preview_hovered = { underline = true }
+marker_copied   = { fg = "#b8efcf", bg = "#b8efcf" }
+marker_cut      = { fg = "#ffb7c5", bg = "#ffb7c5" }
+marker_marked   = { fg = "#8be9e1", bg = "#8be9e1" }
+marker_selected = { fg = "#bbf7ef", bg = "#bbf7ef" }
+count_copied   = { fg = "#14353b", bg = "#b8efcf" }
+count_cut      = { fg = "#14353b", bg = "#ffb7c5" }
+count_selected = { fg = "#14353b", bg = "#bbf7ef" }
 
-# 查找时高亮的关键词
-find_keyword  = { fg = "#f9e2af", bold = true, underline = true }
-find_position = { fg = "#f38ba8", bg = "reset", italic = true }
-
-# 符号链接的指向
-symlink_target = { italic = true }
-
-# 标记 (复制、剪切、选中) 的样式
-marker_copied   = { fg = "#a6e3a1", bg = "#a6e3a1" }
-marker_cut      = { fg = "#f38ba8", bg = "#f38ba8" }
-marker_marked   = { fg = "#89b4fa", bg = "#89b4fa" }
-marker_selected = { fg = "#f9e2af", bg = "#f9e2af" }
-
-# 标记数量显示
-count_copied   = { fg = "black", bg = "#a6e3a1" }
-count_cut      = { fg = "black", bg = "#f38ba8" }
-count_selected = { fg = "black", bg = "#f9e2af" }
-
-# 边框样式
 border_symbol = "│"
-border_style  = { fg = "#585b70" }
-
-# 语法高亮主题，为空则使用 flavor 自带的
+border_style  = { fg = "#9fbfbd" }
 syntect_theme = ""
 
-# : 选项卡 {{{
 [tabs]
-active   = { bg = "#89b4fa", bold = true }  # 激活的选项卡也使用天蓝色
-inactive = { fg = "#89b4fa", bg = "#313244" }
-
-# 分隔符
+active   = { fg = "#14353b", bg = "#8be9e1", bold = true }
+inactive = { fg = "#a8d8d4", bg = "#29494f" }
 sep_inner = { open = "", close = "" }
 sep_outer = { open = "", close = "" }
 
-# : 模式指示器 {{{
-# 正常模式
-normal_main = { bg = "#89b4fa", bold = true }
-normal_alt  = { fg = "#89b4fa", bg = "#313244" }
+[mode]
+normal_main = { fg = "#14353b", bg = "#8be9e1", bold = true }
+normal_alt  = { fg = "#8be9e1", bg = "#29494f" }
+select_main = { fg = "#14353b", bg = "#bbf7ef", bold = true }
+select_alt  = { fg = "#bbf7ef", bg = "#29494f" }
+unset_main  = { fg = "#14353b", bg = "#ffb7c5", bold = true }
+unset_alt   = { fg = "#ffb7c5", bg = "#29494f" }
 
-# 可视模式（选中模式，实现“选中背景是天蓝色”的另一个关键点）
-select_main = { bg = "#89b4fa", bold = true }  # 可视模式下主区域背景为天蓝色
-select_alt  = { fg = "#89b4fa", bg = "#313244" }
+[indicator]
+parent  = { fg = "#14353b", bg = "#a8d8d4" }
+current = { fg = "#14353b", bg = "#8be9e1", bold = true }
+preview = { underline = true }
+padding = { open = "", close = "" }
 
-# 反选模式
-unset_main = { bg = "#f38ba8", bold = true }
-unset_alt  = { fg = "#f38ba8", bg = "#313244" }
-
-# : 状态栏 {{{
 [status]
-overall   = {}
+overall   = { fg = "#f1fffc" }
 sep_left  = { open = "", close = "" }
 sep_right = { open = "", close = "" }
+perm_sep   = { fg = "#9fbfbd" }
+perm_type  = { fg = "#b8efcf" }
+perm_read  = { fg = "#f1fffc" }
+perm_write = { fg = "#ffe1a8" }
+perm_exec  = { fg = "#8be9e1" }
+progress_label  = { fg = "#f1fffc", bold = true }
+progress_normal = { fg = "#8be9e1", bg = "#29494f" }
+progress_error  = { fg = "#ffb7c5", bg = "#29494f" }
 
-# 权限显示
-perm_sep   = { fg = "#585b70" }
-perm_type  = { fg = "#a6e3a1" }
-perm_read  = { fg = "#f9e2af" }
-perm_write = { fg = "#f38ba8" }
-perm_exec  = { fg = "#89b4fa" }
-
-# 进度条
-progress_label  = { bold = true }
-progress_normal = { fg = "#89b4fa", bg = "#1e1e2e" }
-progress_error  = { fg = "#f38ba8", bg = "#1e1e2e" }
-
-# : 命令面板 (Which key) {{{
 [which]
+border          = { fg = "#8be9e1" }
 cols            = 3
-mask            = { bg = "#181825" }
-cand            = { fg = "#94e2d5" }
-rest            = { fg = "#6c7086" }
-desc            = { fg = "#cba6f7" }
+mask            = { bg = "#14353b" }
+cand            = { fg = "#8be9e1", bold = true }
+rest            = { fg = "#9fbfbd" }
+desc            = { fg = "#f1fffc" }
 separator       = " → "
-separator_style = { fg = "#585b70" }
+separator_style = { fg = "#9fbfbd" }
 
-# : 确认对话框 {{{
 [confirm]
-border     = { fg = "#89b4fa" }
-title      = { fg = "#89b4fa" }
-content    = {}
-list       = {}
-btn_yes    = { reversed = true }
-btn_no     = {}
+border     = { fg = "#8be9e1" }
+title      = { fg = "#8be9e1", bold = true }
+body       = { fg = "#f1fffc" }
+list       = { fg = "#f1fffc" }
+btn_yes    = { fg = "#14353b", bg = "#8be9e1", bold = true }
+btn_no     = { fg = "#a8d8d4" }
 btn_labels = [ "  [Y]es  ", "  [N]o  " ]
 
-# : 聚焦功能 (Spotter) {{{
 [spot]
-border = { fg = "#89b4fa" }
-title  = { fg = "#89b4fa" }
+border   = { fg = "#8be9e1" }
+title    = { fg = "#8be9e1", bold = true }
+tbl_col  = { fg = "#a8d8d4" }
+tbl_cell = { fg = "#14353b", bg = "#8be9e1" }
 
-# 表格
-tbl_col  = { fg = "#89b4fa" }
-tbl_cell = { fg = "#f9e2af", reversed = true }
-
-# : 通知消息 {{{
 [notify]
-title_info  = { fg = "#a6e3a1" }
-title_warn  = { fg = "#f9e2af" }
-title_error = { fg = "#f38ba8" }
-
-# 图标
+title_info  = { fg = "#8be9e1" }
+title_warn  = { fg = "#ffe1a8" }
+title_error = { fg = "#ffb7c5" }
 icon_info  = "i"
 icon_warn  = "!"
 icon_error = "x"
 
-# : 文件拾取器 {{{
 [pick]
-border   = { fg = "#89b4fa" }
-active   = { fg = "#cba6f7", bold = true }
-inactive = {}
+border   = { fg = "#8be9e1" }
+active   = { fg = "#14353b", bg = "#8be9e1", bold = true }
+inactive = { fg = "#f1fffc" }
 
-# : 输入框 {{{
 [input]
-border   = { fg = "#89b4fa" }
-title    = {}
-value    = {}
-selected = { reversed = true }
+border   = { fg = "#8be9e1" }
+title    = { fg = "#8be9e1" }
+value    = { fg = "#f1fffc" }
+selected = { fg = "#14353b", bg = "#8be9e1" }
 
-# : 自动补全 {{{
 [cmp]
-border   = { fg = "#89b4fa" }
-active   = { reversed = true }
-inactive = {}
-
-# 图标
+border   = { fg = "#8be9e1" }
+active   = { fg = "#14353b", bg = "#8be9e1" }
+inactive = { fg = "#f1fffc" }
 icon_file    = "󰈔"
 icon_folder  = "󰉋"
 icon_command = "󰘳"
 
-# : 任务管理器 {{{
 [tasks]
-border  = { fg = "#89b4fa" }
-title   = {}
-hovered = { fg = "#cba6f7", underline = true }
+border  = { fg = "#8be9e1" }
+title   = { fg = "#8be9e1" }
+hovered = { fg = "#bbf7ef", underline = true }
 
-# : 帮助菜单 {{{
 [help]
-on      = { fg = "#89b4fa" }
-run     = { fg = "#cba6f7" }
-desc    = {}
-hovered = { reversed = true, bold = true }
-footer  = { fg = "#cdd6f4", bg = "#313244" }
+border  = { fg = "#8be9e1" }
+chord   = { fg = "#8be9e1", bold = true }
+action  = { fg = "#f1fffc" }
+hovered = { fg = "#14353b", bg = "#8be9e1", bold = true }
 
-# : 文件类型特定样式（核心：让所有文件默认显示为白色）{{{
 [filetype]
 rules = [
-    # 图片文件
-    { mime = "image/*", fg = "#f38ba8" },
-    # 音视频文件
-    { mime = "{audio,video}/*", fg = "#89b4fa" },
-    # 压缩包
-    { mime = "application/{zip,rar,7z*,tar,gzip,xz}", fg = "#fab387" },
-    # 文档
-    { mime = "application/{pdf,doc*,xls*,ppt*}", fg = "#a6e3a1" },
-
-    # 特殊文件：失效的符号链接
-    { url = "*", is = "orphan", bg = "#f38ba8" },
-    # 特殊文件：可执行文件
-    { url = "*", is = "exec", fg = "#a6e3a1" },
-
-    # 目录
-    { url = "*/", fg = "#89b4fa" },
-
-    # ---------- 最关键的部分：所有其他文件，字体主色为白色 ----------
-    # 这是你“字体白色”需求的核心规则
-    { mime = "*", fg = "#cdd6f4" }, # fg 是前景色，即字体颜色，使用接近白色的柔白
+    { mime = "**/image/*", fg = "#bbf7ef" },
+    { mime = "**/{audio,video}/*", fg = "#8be9e1" },
+    { mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio}", fg = "#ffe1a8" },
+    { mime = "**/application/{pdf,doc*,xls*,ppt*,rtf}", fg = "#a8d8d4" },
+    { url = "*", is = "orphan", fg = "#14353b", bg = "#ffb7c5" },
+    { url = "*", is = "exec", fg = "#b8efcf" },
+    { url = "*/", fg = "#8be9e1" },
+    { url = "*", fg = "#f1fffc" },
 ]
 
-# : 图标配置（使用 Nerd Fonts）{{{
 [icon]
-# 预定义图标规则，可根据个人喜好调整
 globs = []
-dirs  = [
-    { name = ".config", text = "" },
-    { name = ".git", text = "" },
-    { name = ".github", text = "" },
-    { name = "Desktop", text = "" },
-    { name = "Documents", text = "" },
-    { name = "Downloads", text = "" },
-    { name = "Music", text = "" },
-    { name = "Pictures", text = "" },
-    { name = "Videos", text = "" },
+dirs = [
+    { name = ".config", text = "", fg = "#8be9e1" },
+    { name = ".git", text = "", fg = "#a8d8d4" },
+    { name = ".github", text = "", fg = "#a8d8d4" },
+    { name = "Desktop", text = "", fg = "#8be9e1" },
+    { name = "Documents", text = "", fg = "#8be9e1" },
+    { name = "Downloads", text = "", fg = "#8be9e1" },
+    { name = "Music", text = "", fg = "#8be9e1" },
+    { name = "Pictures", text = "", fg = "#8be9e1" },
+    { name = "Videos", text = "", fg = "#8be9e1" },
 ]
-
 files = [
-    { name = ".bashrc", text = "", fg = "#89e051" },
-    { name = ".gitconfig", text = "", fg = "#f54d27" },
-    { name = ".vimrc", text = "", fg = "#019833" },
-    { name = ".zshrc", text = "", fg = "#89e051" },
-    { name = "Makefile", text = "", fg = "#6d8086" },
-    { name = "README.md", text = "", fg = "#ededed" },
+    { name = ".bashrc", text = "", fg = "#c6f2a6" },
+    { name = ".gitconfig", text = "", fg = "#ffb3a1" },
+    { name = ".vimrc", text = "", fg = "#89e0b0" },
+    { name = ".zshrc", text = "", fg = "#c6f2a6" },
+    { name = "Makefile", text = "", fg = "#abc9cb" },
+    { name = "README.md", text = "", fg = "#f1fffc" },
 ]
-
 exts = [
-    { name = "rs", text = "", fg = "#dea584" },
-    { name = "go", text = "", fg = "#00add8" },
-    { name = "js", text = "", fg = "#cbcb41" },
-    { name = "py", text = "", fg = "#ffbc03" },
-    { name = "json", text = "", fg = "#cbcb41" },
-    { name = "toml", text = "", fg = "#9c4221" },
-    { name = "md", text = "", fg = "#dddddd" },
+    { name = "rs", text = "", fg = "#ffc397" },
+    { name = "go", text = "", fg = "#8bddf2" },
+    { name = "js", text = "", fg = "#f5ed92" },
+    { name = "py", text = "", fg = "#ffe08a" },
+    { name = "json", text = "", fg = "#f5ed92" },
+    { name = "toml", text = "", fg = "#ffb394" },
+    { name = "md", text = "", fg = "#f1fffc" },
 ]
-
 conds = [
-    # 为不同类型的文件或目录提供默认图标
-    { if = "orphan", text = "" },
-    { if = "link", text = "" },
-    { if = "dir", text = "" },
-    { if = "exec", text = "" },
-    { if = "!dir", text = "󰈔" },
+    { if = "orphan", text = "", fg = "#ffb7c5" },
+    { if = "link", text = "", fg = "#a8d8d4" },
+    { if = "dir", text = "", fg = "#8be9e1" },
+    { if = "exec", text = "", fg = "#b8efcf" },
+    { if = "!dir", text = "󰈔", fg = "#f1fffc" },
 ]

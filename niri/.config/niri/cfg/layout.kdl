@@ -2,6 +2,12 @@
         gaps 16 // Gap between windows
         center-focused-column "never" // Don’t auto-center focused column
 
+        // 亮青：与 Fish / Yazi 的主强调色保持一致。
+        focus-ring {
+            on
+            active-color "#8be9e1"
+        }
+
         background-color "transparent" // <- needed for noctalia-shell to set wallpaper
 
         preset-column-widths {
