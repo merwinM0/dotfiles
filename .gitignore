@@ -10,6 +10,12 @@
 /.pi/.pi/agent/npm/*
 !/.pi/.pi/agent/npm/.gitignore
 
+# Noctalia: keep the entire local directory for Stow, but publish only reviewed
+# palettes. Personal settings, plugin state/downloads and future configs stay local.
+/noctalia/.config/noctalia/*
+!/noctalia/.config/noctalia/colors.json
+!/noctalia/.config/noctalia/colorschemes/
+
 # Fish universal variables may contain private paths and exported credentials.
 /fish/.config/fish/fish_variables
 

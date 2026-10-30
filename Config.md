@@ -11,6 +11,35 @@
 - `yay -S mihomo-party-bin`
 - `yay -S wechat-bin`
 
+### 交互式安装与卸载（aur / pac / uninstall）
+
+三个命令由 `package-tools` Stow 包管理，对应 `~/.local/bin/aur`、`pac` 和 `uninstall`，共用 `package-tools/.local/libexec/package-tools/common.bash`。
+
+```bash
+aur                 # 搜索并安装 AUR 包
+pac                 # 搜索并安装官方/已配置仓库中的包
+uninstall           # 从手动安装的包中选择卸载
+aur 浏览器           # 可选：预填搜索关键词
+pac --help
+```
+
+- 配色参考 [青.md](青.md) 的亮色：月白 `#EBF5F7`、浅青 `#BEE7E3`、碧青 `#A7DFDB`；失败/警告保留红黄状态色。
+- 软件包列表从顶部开始，支持搜索、Tab 多选、Enter 确认、Esc 取消；窄终端的预览自动移到底部。
+- `Alt+P` 切换预览，`Alt+J/K` 滚动，`Alt+D/U` 半页滚动；AUR 的 `Alt+B`（小写 b）预览 PKGBUILD，`Alt+Shift+B` 返回包信息。
+- 列表载入和数据库核验显示旋转动画；下载、构建和安装保留 yay/pacman 的真实输出、原生进度条、密码及确认提示，不显示虚构百分比。
+- 安装成功必须同时满足：安装命令退出码为 0，且 `pacman --color never -Q` 查询成功、所选包都确实存在。显示实际安装版本，但不代替各软件的运行功能测试。
+- 卸载成功必须同时满足：卸载命令退出码为 0，且完整本地数据库查询成功、所选包都已不存在。数据库查询报错不会被误判为“卸载成功”。
+- 取消、权限失败、部分成功、残留包等情况分别提示；失败返回非零退出码，不再无条件打印成功。
+- 不再使用 `--noconfirm`、失效的 Omarchy 脚本或后台 sudo 保活，也不把 `updatedb` 的结果当成安装结果。
+- `PACKAGE_TOOLS_ANIMATION=0` 关闭加载动画；`NO_COLOR=1` 关闭颜色。非终端输出自动使用静态状态提示。
+- 只调整这三个命令各自的界面，原 Alt+I 小菜单的顺序和布局本次未修改。
+
+离线回归测试（使用临时 mock，不会真的安装、卸载或请求 sudo 权限）：
+
+```bash
+python3 -B tests/test_package_tools.py
+```
+
 ---
 
 ## 软件安装
@@ -232,6 +261,20 @@ Yazi 配置位于 `yazi/.config/yazi/yazi.toml`。`scripts/view-image.sh` 是兼
 ---
 
 ## Stow 使用
+
+### 当前新增的管理项
+
+```bash
+cd ~/dotfiles
+stow --simulate --target="$HOME" package-tools noctalia
+stow --target="$HOME" package-tools noctalia
+```
+
+- `package-tools/.local/bin/{aur,pac,uninstall}` 链接到 `~/.local/bin/`；共用逻辑位于 `~/.local/libexec/package-tools/`。
+- `noctalia/.config/noctalia/` 链接到 `~/.config/noctalia/`。此机器的完整目录仍保留，但 Git 只记录检查过的 `colors.json` 和 `colorschemes/`。
+- Noctalia 的个人 `settings.json`、插件状态/下载内容及其他未审查配置保持忽略；当前 v5 的 GUI 设置在 `~/.local/state/noctalia/settings.toml`，此次未迁移或提交。
+- 若目标位置已有真实文件，先备份并核对，再迁入对应 Stow 包；不要直接用 `--adopt` 覆盖仓库中不同的配置。
+- 本次原始包管理脚本备份位于 `~/.local/state/package-tools-backups/`，不在 Git 仓库内。
 
 ### 1. 创建包结构
 

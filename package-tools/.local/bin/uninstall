@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+script=$(readlink -f -- "${BASH_SOURCE[0]}") || exit 1
+common="$(dirname -- "$script")/../libexec/package-tools/common.bash"
+if [[ ! -r $common ]]; then
+    printf '%s\n' '找不到 package-tools 共用脚本，请重新运行 stow package-tools。' >&2
+    exit 1
+fi
+source "$common"
+package_tools_main uninstall "$@"
