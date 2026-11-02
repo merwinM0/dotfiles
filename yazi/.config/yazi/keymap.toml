@@ -57,7 +57,9 @@ keymap = [
     { on = "v", run = "visual_mode", desc = "Enter visual mode (selection mode)" },
     { on = "V", run = "visual_mode --unset", desc = "Enter visual mode (unset mode)" },
 
-    # Seeking
+    # Seeking：独立预览按键，避免 W / S 与其他现有按键重复时受影响。
+    { on = "<A-Up>", run = "seek -1", desc = "预览：上一页 / 向上滚动" },
+    { on = "<A-Down>", run = "seek 1", desc = "预览：下一页 / 向下滚动" },
     { on = "W", run = "seek -5", desc = "Seek up 5 units in the preview" },
     { on = "S", run = "seek 5", desc = "Seek down 5 units in the preview" },
 

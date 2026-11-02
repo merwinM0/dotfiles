@@ -260,6 +260,56 @@ Yazi 配置位于 `yazi/.config/yazi/yazi.toml`。`scripts/view-image.sh` 是兼
 
 ---
 
+## Yazi：PDF / Word 终端阅读与预览
+
+配置位于 `yazi/.config/yazi/`，适配 Yazi 26.9.1。PDF 使用内置 `pdftoppm` 页面预览；Word 使用 `piper` 加 `pandoc` / `antiword` 文字预览，不依赖 LibreOffice，也不声称保留 Word 的原始分页和图片。
+
+| 格式 | Enter / o 打开 | 右侧预览 | O / Shift+Enter 备用方式 |
+| --- | --- | --- | --- |
+| PDF | `tdf` 终端页面阅读 | Yazi 内置页面预览 | 文字阅读（`pdftotext + less`）、Zathura 图形窗口 |
+| DOCX | `doxx` 终端阅读 | `pandoc` 提取文字 | `pandoc + less` 文字阅读 |
+| 老式 DOC | `antiword + less` 文字阅读 | `antiword` 提取文字 | 同默认方式 |
+
+- `Alt+↑` / `Alt+↓` 向上、向下滚动预览；PDF 的单位是页。原有文件导航和图片查看方式不变。
+- 终端阅读器使用 `block = true`，退出后返回 Yazi；Zathura 使用 `orphan = true`，独立窗口不阻塞文件管理器。
+- 每次只打开当前/首个选中文件；文件参数由 Yazi 的 `%s1` 转义，不额外套引号。MIME 使用 `mime` 匹配，扩展名使用 `url` 兜底；不把 XLSX/PPTX 交给 doxx。
+- `scripts/document-text.py` 共用于文字预览和分页阅读，使用 Python 标准库；传入绝对路径，兼容空格、中文和短横线开头的文件名。
+- 文字转换成功后才启动 less；临时文件自动移除，不记录 less 历史。扫描 PDF 没有可提取文字时，使用 tdf 看页面，若需文字搜索则先 OCR。
+- DOCX 预览是文字视图；复杂表格、图片、公式和版面以原文档为准，不能当作 Word 的完整替代。
+
+### 依赖安装与插件恢复
+
+通过 yay 安装 AUR 的 `tdf-git` 和作者维护的 `doxx-bin`，后者直接校验并打包上游二进制，避免不必要的完整编译。`antiword` 只有官方仓库包，仍可由 yay 安装。两个阅读器提供的命令仍叫 `tdf` / `doxx`。
+
+```bash
+yay -S --needed tdf-git doxx-bin antiword
+# 新电脑还需要：Python、less、poppler（pdftoppm / pdftotext）、pandoc。
+# 本机已有 pandoc-bin；不要为了恢复配置再额外安装冲突的 pandoc 包。
+
+# Stow 链接配置后，按 package.toml 恢复锁定版本的 piper：
+ya pkg install
+
+pacman -Q tdf-git doxx-bin antiword
+```
+
+`doxx-bin` 当前为 0.1.4：TUI 图片仍是占位显示，不能当作 Word 的完整页面渲染器。
+
+`package.toml` 纳入 Git，插件下载目录 `plugins/` 保留本地并忽略；不提交下载缓存和构建产物。
+
+无需安装/卸载软件的离线回归测试：
+
+```bash
+python3 -B tests/test_yazi_documents.py -v
+```
+
+测试包含 MIME/扩展名路由、终端阻塞模式、插件锁定、文件名转义、转换失败处理，以及本机 pandoc / Poppler 的真实 DOCX 文字提取与 PDF 渲染。
+
+本机已确认安装 `tdf-git 20260815.r155.de00504-1`（tdf 0.5.0）、`doxx-bin 0.1.4-1` 和 `antiword 0.37-12`。全部 41 项回归测试通过；另在真实 Foot 窗口中自动验证了 PDF / DOCX / DOC 从 Yazi 按 Enter 打开、退出阅读器并返回 Yazi，包含中文、空格、单引号和短横线开头的文件名。终端集成验证使用生成的 PDF / DOCX 和 antiword 上游公开 DOC 样例，不读取个人文档。
+
+退出并重新打开 Yazi 生效。
+
+---
+
 ## Stow 使用
 
 ### 当前新增的管理项

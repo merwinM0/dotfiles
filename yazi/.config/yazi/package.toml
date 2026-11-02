@@ -1,0 +1,7 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:piper"
+rev = "25d992d"
+hash = "d1e0499cae5f3aeb628c267616d4b682"
+
+[flavor]
+deps = []

@@ -38,11 +38,24 @@ Micro = [
 Code = [
     { run = 'code "%s"', orphan = true, block = true, for = "unix" },
 ]
+# 终端阅读器阻塞 Yazi，退出后回到文件列表；一次只打开当前/首个文件。
+Tdf = [
+    { run = 'tdf %s1', block = true, desc = "PDF：终端页面阅读（tdf）", for = "unix" },
+]
 Zathura = [
-    { run = 'zathura "%s"', orphan = true, block = true, desc = "zathura", for = "unix" },
+    { run = 'zathura %s1', orphan = true, desc = "PDF：图形阅读（Zathura）", for = "unix" },
+]
+PdfText = [
+    { run = 'python3 "$HOME/.config/yazi/scripts/document-text.py" pdf %s1', block = true, desc = "PDF：纯文字（less）", for = "unix" },
 ]
 Doxx = [
-    { run = 'doxx "%s"', orphan = true, block = true, desc = "doxx", for = "unix" },
+    { run = 'doxx %s1', block = true, desc = "DOCX：终端阅读（doxx）", for = "unix" },
+]
+DocxText = [
+    { run = 'python3 "$HOME/.config/yazi/scripts/document-text.py" docx %s1', block = true, desc = "DOCX：纯文字（pandoc / less）", for = "unix" },
+]
+Doc = [
+    { run = 'python3 "$HOME/.config/yazi/scripts/document-text.py" doc %s1', block = true, desc = "DOC：纯文字（antiword / less）", for = "unix" },
 ]
 Csvlen = [
     { run = 'csvlens "%s"', orphan = true, block = true, desc = "csvlens", for = "unix" },
@@ -68,18 +81,19 @@ rules = [
     # 图片：先按 MIME 匹配，再用扩展名覆盖 MIME 尚未识别时的情况。
     { mime = "**/image/*", use = [ "timg" ] },
     { url = "*.{png,PNG,jpg,JPG,jpeg,JPEG,webp,WEBP,gif,GIF,bmp,BMP,tif,TIF,tiff,TIFF,svg,SVG,avif,AVIF,ico,ICO,qoi,QOI}", use = [ "timg" ] },
-    # Doc
-    { url = "application/doc", use = [ "Doxx" ] },
-    # Docx
-    { url = "application/docx", use = [ "Doxx" ] },
-    { url = "application/vnd.openxmlformats-officedocument.*", use = [ "Doxx" ] },
+    # Word：只匹配文字文档，不把 XLSX / PPTX 误交给 doxx。
+    { mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document", use = [ "Doxx", "DocxText" ] },
+    { url = "*.docx", use = [ "Doxx", "DocxText" ] },
+    { mime = "application/msword", use = [ "Doc" ] },
+    { url = "*.doc", use = [ "Doc" ] },
     # CSV
     { url = "application/csv", use = [ "Csvlen" ] },
     { url = "text/csv", use = [ "Csvlen" ] },
     { url = "application/vnd.ms-excel", use = [ "Csvlen" ] },
     { url = "text/comma-separated-values", use = [ "Csvlen" ] },
-    # PDF
-    { url = "application/pdf", use = [ "Zathura" ] },
+    # PDF：Enter 用 tdf；O / Shift+Enter 可选择纯文字或图形阅读。
+    { mime = "application/pdf", use = [ "Tdf", "PdfText", "Zathura" ] },
+    { url = "*.pdf", use = [ "Tdf", "PdfText", "Zathura" ] },
     # Folder
     { url = "inode/directory", use = [ "Helix", "Code", "reveal" ] },
     # Empty file
@@ -88,6 +102,15 @@ rules = [
     { url = "*.md", use = ["Typora"]},
     # Fallback
     { url = "*", use = [ "Helix", "Code", "Micro", "Doxx", "reveal","Typora" ] },
+]
+
+# PDF 保留 Yazi 内置的 pdftoppm 页面预览；Word 使用可滚动的文字预览。
+[plugin]
+prepend_previewers = [
+    { mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document", run = 'piper -- python3 "$HOME/.config/yazi/scripts/document-text.py" --preview --width "$w" docx "$1"' },
+    { url = "*.docx", run = 'piper -- python3 "$HOME/.config/yazi/scripts/document-text.py" --preview --width "$w" docx "$1"' },
+    { mime = "application/msword", run = 'piper -- python3 "$HOME/.config/yazi/scripts/document-text.py" --preview --width "$w" doc "$1"' },
+    { url = "*.doc", run = 'piper -- python3 "$HOME/.config/yazi/scripts/document-text.py" --preview --width "$w" doc "$1"' },
 ]
 
 [tasks]
