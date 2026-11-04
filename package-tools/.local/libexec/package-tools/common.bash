@@ -2,6 +2,41 @@
 # aur / pac / uninstall 共用的交互、动画和结果核验逻辑。
 # 主色来自 青.md：月白、碧青、浅青、天青、灰青、玉青、青黑。
 
+# Keep transaction execution foreground and interactive; fall back without Python/TTY.
+pt_transaction() {
+    local adapter="${BASH_SOURCE[0]%/*}/progress.py"
+    if [[ -t 0 && -t 1 && ${TERM:-dumb} != dumb && ${PACKAGE_TOOLS_PROGRESS:-1} != 0 ]] && command -v python3 >/dev/null 2>&1; then
+        python3 "$adapter" -- "$@"
+    else
+        "$@"
+    fi
+}
+
+pt_summary() {
+    local title=$1 count=$2 source=$3 line char length i padding
+    local width=52
+    if [[ ${COLUMNS:-80} =~ ^[0-9]+$ ]] && (( ${COLUMNS:-80} < 56 )); then
+        printf '\n%s%s · 已选择 %s 个软件包%s\n  来源：%s\n' "$PT_ACCENT" "$title" "$count" "$PT_RESET" "$source" >&2
+        return
+    fi
+    printf '\n%s┏' "$PT_ACCENT" >&2
+    printf '━%.0s' {1..52} >&2
+    printf '┓%s\n' "$PT_RESET" >&2
+    for line in "$title · 已选择 $count 个软件包" "来源：$source"; do
+        length=0
+        for ((i=0; i<${#line}; i++)); do
+            char=${line:i:1}
+            if [[ $char == [[:ascii:]] || $char == '·' ]]; then length=$((length + 1)); else length=$((length + 2)); fi
+        done
+        padding=$((width - length - 2))
+        (( padding >= 0 )) || padding=0
+        printf '%s┃%s %s%*s %s┃%s\n' "$PT_ACCENT" "$PT_RESET" "$line" "$padding" '' "$PT_ACCENT" "$PT_RESET" >&2
+    done
+    printf '%s┗' "$PT_ACCENT" >&2
+    printf '━%.0s' {1..52} >&2
+    printf '┛%s\n' "$PT_RESET" >&2
+}
+
 pt_notice() {
     local color=$1 symbol=$2 message=$3
     printf '%s%s%s %s\n' "$color" "$symbol" "$PT_RESET" "$message" >&2
@@ -36,7 +71,7 @@ pt_cancel() {
 pt_capture() {
     local destination=$1 label=$2 result=0 frame=0
     shift 2
-    local -a frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+    local -a frames=('██░░░░░░' '░██░░░░░' '░░██░░░░' '░░░██░░░' '░░░░██░░' '░░░░░██░' '░░░░░░██' '░░░░░██░' '░░░░██░░' '░░░██░░░' '░░██░░░░' '░██░░░░░')
     "$@" >"$destination" 2>"$PT_WORKDIR/command-error" </dev/null &
     PT_JOB_PID=$!
     if [[ $PT_ANIMATE == 1 ]]; then
@@ -60,7 +95,7 @@ pt_capture() {
         cat -- "$PT_WORKDIR/command-error" >&2
     fi
     if (( result == 0 )); then
-        pt_notice "$PT_MUTED" '✓' "$label：完成"
+        pt_notice "$PT_OK" '✓' "$label：完成"
     else
         pt_notice "$PT_ERROR" '✗' "$label：失败（退出码 $result）"
     fi
@@ -74,7 +109,7 @@ pt_package_name_valid() {
 pt_help() {
     printf '用法：%s [搜索关键词]\n' "$1"
     printf '%s\n' 'Tab 多选，Enter 确认，Esc 取消；Alt+P 切换预览，Alt+J/K 滚动。'
-    printf '%s\n' '列表和核验有加载动画；下载、构建和安装保留包管理器的真实进度与确认。'
+    printf '%s\n' '列表和核验使用青色色块动画；可识别的事务进度使用青色色块，保留原生确认与构建日志。'
     printf '%s\n' '成功必须同时满足：命令正常退出、本地包数据库达到目标状态。'
 }
 
@@ -83,7 +118,7 @@ pt_verify() {
     shift 2
     local -a correct=() incorrect=()
     local -A installed=()
-    printf '\n%s[3/3] 核验结果%s\n' "$PT_ACCENT" "$PT_RESET" >&2
+    printf '\n%s[3/3] 核验结果%s\n' "$PT_CHECK" "$PT_RESET" >&2
     # 查询整个本地数据库并确认查询成功，不能把查询错误误当成“已卸载”。
     if pt_capture "$PT_WORKDIR/installed" '读取本地包数据库' pacman --color never -Q; then
         :
@@ -169,7 +204,7 @@ package_tools_main() {
         fi
     done
 
-    PT_ACCENT= PT_MUTED= PT_OK= PT_WARN= PT_ERROR= PT_RESET=
+    PT_ACCENT= PT_MUTED= PT_OK= PT_WARN= PT_ERROR= PT_BUILD= PT_CHECK= PT_RESET=
     PT_ANIMATE=0 PT_SPINNING=0 PT_JOB_PID= PT_WORKDIR=
     local -a native_color=(--color never)
     if [[ -t 2 && ${TERM:-dumb} != dumb ]]; then
@@ -177,7 +212,9 @@ package_tools_main() {
         if [[ ! -v NO_COLOR ]]; then
             PT_ACCENT=$'\033[38;2;167;223;219m'  # 碧青 #A7DFDB
             PT_MUTED=$'\033[38;2;150;199;196m'   # 灰青 #96C7C4
-            PT_OK=$'\033[38;2;199;235;228m'      # 玉青 #C7EBE4
+            PT_OK=$'\033[38;2;184;239;207m'      # 安装/成功：浅绿（附加状态色）
+            PT_BUILD=$'\033[38;2;203;179;232m'
+            PT_CHECK=$'\033[38;2;183;230;255m'
             PT_WARN=$'\033[38;2;255;225;168m'
             PT_ERROR=$'\033[38;2;255;183;197m'
             PT_RESET=$'\033[0m'
@@ -263,9 +300,20 @@ package_tools_main() {
         pt_notice "$PT_MUTED" '○' '没有选择软件包。'
         return 0
     fi
-    printf '\n%s[2/3] %s%s\n' "$PT_ACCENT" "$title" "$PT_RESET" >&2
+    local work_color=$PT_OK source='官方仓库'
+    case "$mode" in
+        aur) work_color=$PT_BUILD; source='AUR（含构建与依赖安装）' ;;
+        uninstall) work_color=$PT_WARN; source='本地已安装软件包' ;;
+    esac
+    pt_summary "$title" "${#selected[@]}" "$source"
     printf '  %s\n' "${selected[@]}" >&2
-    pt_notice "$PT_MUTED" '→' '以下保留真实进度和确认提示；Ctrl+C 可取消。'
+    printf '\n%s[2/3] %s%s\n' "$work_color" "$title" "$PT_RESET" >&2
+    if [[ $mode == uninstall ]]; then
+        pt_notice "$PT_WARN" '!' '将使用 -Rns：移除所选包及不再需要的依赖；请核对下方最终清单。'
+    elif [[ $mode == aur ]]; then
+        pt_notice "$PT_BUILD" '→' '请审阅 PKGBUILD 与差异；构建日志保持原样，不跳过确认。'
+    fi
+    pt_notice "$PT_MUTED" '→' '请核对包管理器的最终事务清单；密码与确认正常输入，Ctrl+C 可取消。'
     if sudo -v; then :; else
         result=$?
         pt_notice "$PT_ERROR" '✗' '权限验证失败，没有开始操作。'
@@ -273,11 +321,11 @@ package_tools_main() {
     fi
     case "$mode" in
         aur)
-            if yay "${native_color[@]}" -S --needed -- "${targets[@]}"; then result=0; else result=$?; fi ;;
+            if pt_transaction yay "${native_color[@]}" -S --needed -- "${targets[@]}"; then result=0; else result=$?; fi ;;
         pac)
-            if sudo pacman "${native_color[@]}" -S --needed -- "${targets[@]}"; then result=0; else result=$?; fi ;;
+            if pt_transaction sudo pacman "${native_color[@]}" -S --needed -- "${targets[@]}"; then result=0; else result=$?; fi ;;
         uninstall)
-            if sudo pacman "${native_color[@]}" -Rns -- "${targets[@]}"; then result=0; else result=$?; fi ;;
+            if pt_transaction sudo pacman "${native_color[@]}" -Rns -- "${targets[@]}"; then result=0; else result=$?; fi ;;
     esac
     pt_verify "$mode" "$result" "${selected[@]}"
 }

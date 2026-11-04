@@ -83,6 +83,8 @@ for pkg in changed:
         db[pkg] = '1.0'
 dbpath.write_text(json.dumps(db))
 print('mock native download/install progress: 100%', flush=True)
+if os.environ.get('FAKE_BAR'):
+    print('foo 12 MiB 2 MiB/s [C o o o   ] 50%', flush=True)
 sys.exit(code)
 '''
 
@@ -358,11 +360,25 @@ class PackageToolsTest(unittest.TestCase):
     def test_animation_and_tty_preserved(self):
         code, output = self.run_pty(width=40)
         self.assertEqual(code, 0, output.decode(errors="replace"))
-        self.assertIn("⠋".encode(), output)
-        self.assertIn("⠙".encode(), output)
+        self.assertIn("██░░░░░░".encode(), output)
+        self.assertIn("░██░░░░░".encode(), output)
         self.assertIn(b"\033[38;2;167;223;219m", output)
         self.assertIn(b"\033[?25h", output)
         self.assertTrue(self.transactions()[0]["tty"])
+
+    def test_cyan_progress_adapter_preserves_exit_and_interaction(self):
+        code, output = self.run_pty(extra={"FAKE_BAR": "1"})
+        self.assertEqual(code, 0, output.decode(errors="replace"))
+        self.assertIn(b"\033[48;2;103;182;180m", output)
+        self.assertIn(b"50%", output)
+        self.assertNotIn(b"C o o o", output)
+        self.assertTrue(self.transactions()[0]["tty"])
+
+    def test_progress_opt_out_keeps_native_output(self):
+        code, output = self.run_pty(extra={"FAKE_BAR": "1", "PACKAGE_TOOLS_PROGRESS": "0"})
+        self.assertEqual(code, 0)
+        self.assertIn(b"C o o o", output)
+        self.assertNotIn(b"\033[48;2;103;182;180m", output)
 
     def test_transaction_confirmation_stays_interactive(self):
         code, output = self.run_pty(confirm=True)
