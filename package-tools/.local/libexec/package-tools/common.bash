@@ -308,12 +308,6 @@ package_tools_main() {
     pt_summary "$title" "${#selected[@]}" "$source"
     printf '  %s\n' "${selected[@]}" >&2
     printf '\n%s[2/3] %s%s\n' "$work_color" "$title" "$PT_RESET" >&2
-    if [[ $mode == uninstall ]]; then
-        pt_notice "$PT_WARN" '!' '将使用 -Rns：移除所选包及不再需要的依赖；请核对下方最终清单。'
-    elif [[ $mode == aur ]]; then
-        pt_notice "$PT_BUILD" '→' '请审阅 PKGBUILD 与差异；构建日志保持原样，不跳过确认。'
-    fi
-    pt_notice "$PT_MUTED" '→' '请核对包管理器的最终事务清单；密码与确认正常输入，Ctrl+C 可取消。'
     if sudo -v; then :; else
         result=$?
         pt_notice "$PT_ERROR" '✗' '权限验证失败，没有开始操作。'
