@@ -1,0 +1,3 @@
+#!/bin/sh
+# Keep the vendor executable untouched; this launcher is managed by Stow.
+exec node "$HOME/.local/lib/pi-ui/launch.mjs" "$@"
