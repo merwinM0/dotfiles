@@ -27,6 +27,7 @@ Build calm, readable terminal output with a consistent visual hierarchy: direct 
 - Emit all custom terminal colors directly as 24-bit ANSI True Color. Do not use color/styling wrapper libraries or a second, library-specific palette.
 - Prefer soft versions of familiar green, red, yellow, blue, cyan, purple, and gray. Avoid neon, gradients, rainbow text, and large filled backgrounds.
 - Use rounded box-drawing panels for information that deserves attention. Do not frame every line or every progress event.
+- Emoji and icons follow a strict allowlist: never introduce any not explicitly permitted here. This version permits no emoji or standalone icons; formatter-added visuals are limited to panel-border characters `╭`, `╮`, `╰`, `╯`, `─`, `│`, `├`, `┤` and ASCII border fallbacks `+`, `-`, `|`. Use words for status. Emoji mentioned in width/input tests are test data, not approved indicators. This rule restricts added decoration, not literal user content.
 - Preserve the terminal's background and default body-text color. Color is an accent, not a requirement for understanding.
 - Keep formatting independent of business logic and implementation language. Prefer this natural-language contract and the diagrams below over copying a language-specific function.
 - Do not invent output modes or new command-line flags just to implement this visual style. Preserve the project's existing command and data contracts.
@@ -163,7 +164,7 @@ Unicode width and segmentation dependencies are acceptable when needed for corre
 
 - Use concise, factual language. State what happened, what it affects, and what the user should do next.
 - Keep terminology consistent across commands. Do not replace real errors with metaphors, ceremonial narration, or reassuring but misleading summaries.
-- Prefer simple status words over emoji and animated decoration. Report actual results; do not label partial completion as success.
+- Use plain-text status labels, not emoji, standalone icons, icon fonts, or animated decoration. Report actual results; do not label partial completion as success.
 - Preserve the project's stdout/stderr and exit-code contracts. When stdout carries machine data, keep progress and diagnostics on the appropriate separate stream and leave the data undecorated.
 - Keep secrets and sensitive values out of both panels and surrounding logs. A visually prominent panel is not a reason to expose more data.
 
@@ -172,6 +173,7 @@ Unicode width and segmentation dependencies are acceptable when needed for corre
 - [ ] All human-facing color paths use direct 24-bit ANSI and the shared semantic palette, with no styling-wrapper dependency.
 - [ ] Soft colors remain readable on the supported backgrounds; status is understandable without color.
 - [ ] Important results and actions are inside panels; ordinary progress and secondary details remain outside.
+- [ ] No unapproved emoji or icons are introduced; formatter-added visuals use only the documented border characters and ASCII fallbacks.
 - [ ] Both diagrams can be reproduced, with every panel row occupying exactly 40 or 28 display columns respectively.
 - [ ] Short, long, empty, and multiline titles/content render correctly; separator markers differ from empty rows.
 - [ ] Widths at 6, 20, 40, 80, and 88 columns, invalid budgets, and known terminal widths below 6 are handled without unintended frame overflow.
