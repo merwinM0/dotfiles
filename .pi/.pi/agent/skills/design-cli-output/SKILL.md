@@ -2,8 +2,10 @@
 name: design-cli-output
 description: >
   Design CLI output with direct 24-bit ANSI True Color, soft familiar colors,
-  and rounded terminal panels. Put important results and actions inside panels
-  and routine progress outside them. Use for creating or revising terminal
+  and rounded overview panels. Embed the name in the top border, put the
+  primary link and responsive metadata columns inside, and keep status and
+  API details outside with explicitly allowed circle/diamond markers.
+  Use for creating or revising terminal
   reporters, status summaries, error displays, and shared output conventions.
   Provides language-neutral rules and diagrams for Bun TypeScript, Go, Rust,
   C, Python managed with uv, Java, and other languages, including Unicode
@@ -13,7 +15,7 @@ license: MIT
 
 # CLI Output Design
 
-Build calm, readable terminal output with a consistent visual hierarchy: direct ANSI colors, rounded panels for important information, and ordinary lines for everything else. Follow the same design contract in every implementation language.
+Build calm, readable terminal output with a consistent visual hierarchy: a named rounded overview panel with a prominent link and metadata, followed by lightweight status and detail groups outside the frame. Use direct ANSI colors and follow the same design contract in every implementation language.
 
 ## When to Use
 
@@ -26,8 +28,8 @@ Build calm, readable terminal output with a consistent visual hierarchy: direct 
 
 - Emit all custom terminal colors directly as 24-bit ANSI True Color. Do not use color/styling wrapper libraries or a second, library-specific palette.
 - Prefer soft versions of familiar green, red, yellow, blue, cyan, purple, and gray. Avoid neon, gradients, rainbow text, and large filled backgrounds.
-- Use rounded box-drawing panels for information that deserves attention. Do not frame every line or every progress event.
-- Emoji and icons follow a strict allowlist: never introduce any not explicitly permitted here. This version permits no emoji or standalone icons; formatter-added visuals are limited to panel-border characters `╭`, `╮`, `╰`, `╯`, `─`, `│`, `├`, `┤` and ASCII border fallbacks `+`, `-`, `|`. Use words for status. Emoji mentioned in width/input tests are test data, not approved indicators. This rule restricts added decoration, not literal user content.
+- Use one rounded overview panel: name in the top border, primary link first, and metadata below. Keep live status and response details outside; do not frame every line or progress event.
+- Emoji and icons follow a strict allowlist: never introduce any not explicitly permitted here. This version permits no emoji. Formatter-added symbols are limited to panel borders `╭`, `╮`, `╰`, `╯`, `─`, `│`, `├`, `┤`, outside markers `○` / `◇`, and ASCII fallbacks `+`, `-`, `|`. The two outside markers are the only permitted standalone symbols and must have text labels. Emoji mentioned in width/input tests are test data, not approved indicators. This rule restricts added decoration, not literal user content.
 - Preserve the terminal's background and default body-text color. Color is an accent, not a requirement for understanding.
 - Keep formatting independent of business logic and implementation language. Prefer this natural-language contract and the diagrams below over copying a language-specific function.
 - Do not invent output modes or new command-line flags just to implement this visual style. Preserve the project's existing command and data contracts.
@@ -49,7 +51,7 @@ Use one shared semantic palette across all commands. These are custom starting v
 | `muted` | Soft gray | `#ABB3BF` | `171, 179, 191` | `#526071` |
 | `border` | Neutral gray | `#8D99A8` | `141, 153, 168` | `#657284` |
 
-Use `success`, `error`, and `warning` for status labels; `info` for identifiers and useful context; `accent` for the main title; and `highlight` sparingly for a selected value. Borders should normally remain neutral. Secondary text may be muted, but must still be readable. Keep ordinary paragraphs in the terminal's default foreground.
+Use `accent` for the name embedded in the border and `info` for the primary link. Keep borders neutral, metadata labels `muted`, and values in the terminal's default foreground. Outside the panel, status words and their `○` marker may use `success`, `error`, or `warning`; the `◇` detail heading may use `info`. Use `highlight` sparingly for a selected value. Secondary text must remain readable. Do not color the entire panel or response body.
 
 Do not force a dark background to make pastel text work. Use the darker variants when a light background is known. If the background is unknown, keep essential text in the default foreground and apply accents conservatively rather than guessing that pale text is readable.
 
@@ -75,64 +77,108 @@ Color support and Unicode support are separate. A Unicode-capable terminal may k
 
 ## Rounded Panels
 
+### Reference Composition
+
+Use this hierarchy rather than treating the panel as a generic card:
+- Embed the application, command, or resource name near the left of the top border. Do not add another large heading above it.
+- Give the primary link its own prominent, left-aligned row inside the frame. Show a readable, copyable URL without an extra link icon or arrow; omit this row when no real link exists.
+- Place metadata below the link in two balanced columns when space permits, with an open gap rather than a vertical divider.
+- Use a small amount of empty space between the link and metadata and at the bottom. Prefer whitespace to internal horizontal rules in the overview.
+- Below the frame, place ordinary status, database status, and API/detail groups as unboxed lines. Their markers start at the frame's left edge.
+
+The reference is a composition, not a requirement for a white terminal background or different font sizes. Express hierarchy through position, spacing, and restrained ANSI accents. Example services and fields below are illustrative: do not invent database checks, API calls, or configuration just to fill the layout.
+
 ### What Goes Inside and Outside
 
-Inside the panel, place the information the user must notice:
-- The operation's final result or a compact status summary.
-- Important targets, selected configuration, and primary output locations.
-- A failure reason and the next corrective action.
-- A required confirmation or destructive-operation warning, when the command already calls for one.
+Inside the panel, place stable identity and important overview information:
+- The name embedded in the top border and the primary URL or location.
+- Core metadata such as project, version, selected environment, runtime, or configuration.
+- A compact final result when the command produces a result rather than a service overview.
+- Critical failure explanations, corrective actions, or required confirmations when they need emphasis; do not bury them in routine logs.
 
-Outside the panel, keep routine information lightweight:
-- Progress updates, ordinary per-item logs, and background activity.
-- Detailed diagnostics, timings, log-file locations, and secondary hints.
-- Supporting context that does not change the main result or required action.
+Outside the panel, keep operational information lightweight:
+- Current status, database connectivity, and other changing state.
+- API response headings and their indented details, diagnostics, or response summaries.
+- Progress updates, ordinary per-item logs, timings, log-file locations, and secondary hints.
 
-Prefer one main panel for an operation. Use additional panels only for genuinely separate outcomes; avoid nested panels and repetitive framing. Do not repeat the same summary inside and outside the box. Essential errors must not be buried in the surrounding logs.
+Prefer one main panel for an operation. Add panels only for genuinely separate outcomes, not for each status line or API response. Avoid nesting and duplicated payloads. Optional groups appear only when the command actually has that information.
 
 ### Layout Contract
 
-Use a `terminalPanel`-style renderer with the following language-independent contract. A renderer accepts a title, a read-only sequence of text lines or separator markers, and an optional column budget. It returns the completed string; the caller decides where and when to print it.
+Use a `terminalPanel`-style pure renderer. Compose the primary link and optional ordered metadata groups before rendering padded rows; do not simulate columns by joining unmeasured strings. The renderer accepts a title, read-only content with optional separator markers, and a column budget, then returns a string. The caller controls printing and the surrounding status groups.
 
-1. Use `╭`, `╮`, `╰`, and `╯` for rounded corners; `─` for horizontal rules; `│` for sides; and `├` / `┤` for internal dividers. Borders are single-cell box-drawing glyphs, not emoji.
-2. Normalize the column budget: use 80 when it is missing, non-finite, or non-positive; otherwise round down, then limit it to 6–88 columns. When the destination's actual terminal width is known, never exceed it, even if a larger budget was supplied. If a known terminal is narrower than 6 columns, render unboxed text rather than forcing an overflowing panel.
-3. The preferred panel width is the largest of 40 columns, the title's display width plus 5, and each content line's display width plus 4. The actual width is the smaller of that preference and the available budget. Forty is a preference, not a minimum on narrow terminals.
-4. Each content row has a left border, one space, the content, enough padding, one space, and a right border. The inner content width is the panel width minus 4. Every rendered panel row must have the same display width.
-5. When the title fits within the panel width minus 5, place it in the top border, as shown below. Otherwise use an ordinary top border, wrap the title into content-width rows, then add a divider. An empty title uses an ordinary top border without a redundant heading row.
-6. A separator marker (`null` in languages that use it) produces a full inner divider. An empty string produces an empty padded content row; it is not a divider.
-7. Split content at explicit newlines, then wrap each resulting line to the inner width. Preserve intentional blank rows. Prefer word boundaries when practical, but break long paths, URLs, and unbroken words at safe grapheme boundaries rather than overflowing or silently truncating them.
-8. Finish with the rounded bottom border and join rows with newline characters. Leave the final output newline to the caller, so the panel can be combined with surrounding messages without double spacing.
+1. Use `╭`, `╮`, `╰`, and `╯` for rounded corners; `─` for horizontal rules; `│` for sides; and `├` / `┤` only for explicitly needed internal dividers. Borders are single-cell box-drawing glyphs, not emoji.
+2. Normalize the column budget: use 80 when it is missing, non-finite, or non-positive; otherwise round down, then limit it to 6–88 columns. Never exceed a known destination width, even if a larger budget was supplied. Below 6 known columns, use unboxed text rather than an overflowing frame.
+3. Prefer a 72-column overview when space permits, or about 40 columns for a compact single-column panel. A long title or full-width primary line may increase the preference within the budget. These are preferred widths, never minimums; shrink to the actual available space.
+4. Each row consists of a left border, one space, content, padding, one space, and a right border. The inner width is the panel width minus 4; every frame row must have the same display width.
+5. A title that fits within the panel width minus 5 sits in the top border. Otherwise use an ordinary top border and wrap the title into body rows, followed by an empty row rather than a mandatory divider. An empty title needs no extra heading row.
+6. An empty string creates an empty padded row. A separator marker (`null` where appropriate) creates an internal divider only when one is explicitly needed; the reference overview does not insert dividers by default.
+7. Split explicit newlines and wrap to the available content width. Prefer word boundaries, but split long paths, URLs, and unbroken words at safe grapheme boundaries instead of overflowing or silently truncating them.
+8. Close with the rounded bottom border and join rows with newlines. Leave the final output newline to the caller; use one blank line between the frame and the outside status area.
+
+### Responsive Metadata Columns
+
+- Reserve a four-column gap. Divide the remaining inner width into two nearly equal columns, giving an odd extra column to the right. Use two columns only when both have at least 24 display columns; with the stated padding, the panel must be at least 56 columns wide.
+- Measure and wrap each cell to its own column width before combining rows. If one cell uses more lines, pad the other cell on continuation rows. Column starts and the frame's right edge must remain aligned.
+- On narrower terminals, stack the first column's fields and then the second column's fields in their logical order. Keep the primary link above them; preserve every field rather than hiding the right column or shrinking text.
+- Avoid fixed byte offsets, tabs, per-field boxes, internal vertical rules, and unnecessary horizontal separators. Long primary links wrap across the full inner width, not a metadata column.
+
+### Outside Status and Detail Groups
+
+- `○` (U+25CB, white circle) introduces a state line, such as general status or database connectivity. It is not a success symbol: accompanying words must state whether the result is running, connected, unavailable, warning, or error.
+- `◇` (U+25C7, white diamond) introduces a detail group, such as an API response. Put its details on following lines, indented by two display columns to align after the marker and space.
+- These are the only standalone markers allowed. Do not substitute other circle/diamond variants, checkmarks, emoji, icon fonts, or service-specific icons. Keep each marker and its label on the same line, and wrap continuations to the available terminal width.
+- Separate distinct groups with a single blank line when useful. Do not surround each group with another box. If Unicode is unavailable or a marker renders incorrectly, use the already permitted `-` marker plus a clear text label; omit markers/indentation if the terminal is too narrow.
 
 ### Diagrams
 
-Normal output: routine progress above, the important result inside a 40-column panel, and secondary details below. The diagrams show shape only; apply the semantic palette when color is enabled.
+Wide reference: a 72-column panel, a name embedded in the border, a full-width primary link, and two metadata columns of 32 columns separated by four spaces. Status and API details stay outside. The diagrams show shape only; apply the existing palette when color is enabled.
 
 ```text
-Reading configuration...
-Checked 12 files.
+╭─ API Service ────────────────────────────────────────────────────────╮
+│                                                                      │
+│ http://localhost:3000                                                │
+│                                                                      │
+│ Project: demo                       Mode: development                │
+│ Version: 1.4.0                      Region: local                    │
+│ Config: ./config.toml               Runtime: Bun                     │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
 
-╭─ Build complete ─────────────────────╮
-│ OK  12 files processed               │
-│ Output: ./dist                       │
-├──────────────────────────────────────┤
-│ Next: review ./dist                  │
-╰──────────────────────────────────────╯
+○ Status: Running
 
-Elapsed: 0.42 s
-Log: ./logs/build.log
+○ Database: Connected
+
+◇ API response
+  Status: 200 OK
+  Latency: 18 ms
+  Body: {"ok": true}
 ```
 
-Narrow output: at 28 columns, a long title moves into the body and content wraps without breaking the frame. This is a layout example, not an instruction to request confirmation after an operation has already completed.
+Narrow reference: the same information at 40 columns. Metadata stacks in group order; no fields or outside groups disappear.
 
 ```text
-╭──────────────────────────╮
-│ Deployment needs         │
-│ confirmation             │
-├──────────────────────────┤
-│ Target: production       │
-│ Action: confirm before   │
-│ continuing               │
-╰──────────────────────────╯
+╭─ API Service ────────────────────────╮
+│                                      │
+│ http://localhost:3000                │
+│                                      │
+│ Project: demo                        │
+│ Version: 1.4.0                       │
+│ Config: ./config.toml                │
+│ Mode: development                    │
+│ Region: local                        │
+│ Runtime: Bun                         │
+│                                      │
+╰──────────────────────────────────────╯
+
+○ Status: Running
+
+○ Database: Connected
+
+◇ API response
+  Status: 200 OK
+  Latency: 18 ms
+  Body: {"ok": true}
 ```
 
 ## Safe Text, Width, and Wrapping
@@ -164,7 +210,7 @@ Unicode width and segmentation dependencies are acceptable when needed for corre
 
 - Use concise, factual language. State what happened, what it affects, and what the user should do next.
 - Keep terminology consistent across commands. Do not replace real errors with metaphors, ceremonial narration, or reassuring but misleading summaries.
-- Use plain-text status labels, not emoji, standalone icons, icon fonts, or animated decoration. Report actual results; do not label partial completion as success.
+- Use explicit status words with only the approved `○` / `◇` markers where appropriate. Do not add emoji, unlisted icons, icon fonts, or animated decoration. Report actual results; do not label partial completion as success.
 - Preserve the project's stdout/stderr and exit-code contracts. When stdout carries machine data, keep progress and diagnostics on the appropriate separate stream and leave the data undecorated.
 - Keep secrets and sensitive values out of both panels and surrounding logs. A visually prominent panel is not a reason to expose more data.
 
@@ -172,11 +218,13 @@ Unicode width and segmentation dependencies are acceptable when needed for corre
 
 - [ ] All human-facing color paths use direct 24-bit ANSI and the shared semantic palette, with no styling-wrapper dependency.
 - [ ] Soft colors remain readable on the supported backgrounds; status is understandable without color.
-- [ ] Important results and actions are inside panels; ordinary progress and secondary details remain outside.
-- [ ] No unapproved emoji or icons are introduced; formatter-added visuals use only the documented border characters and ASCII fallbacks.
-- [ ] Both diagrams can be reproduced, with every panel row occupying exactly 40 or 28 display columns respectively.
-- [ ] Short, long, empty, and multiline titles/content render correctly; separator markers differ from empty rows.
-- [ ] Widths at 6, 20, 40, 80, and 88 columns, invalid budgets, and known terminal widths below 6 are handled without unintended frame overflow.
+- [ ] The name is embedded in the border, the primary link leads the body, and metadata follows; status/database/API details remain outside.
+- [ ] No emoji or unlisted icons are introduced; only documented borders, `○` / `◇`, and ASCII fallbacks are used for generated symbols.
+- [ ] Both diagrams can be reproduced, with every frame row occupying exactly 72 or 40 display columns respectively.
+- [ ] Two-column cells wrap independently, preserve their four-column gap, and stack without lost or reordered fields below the 56-column threshold.
+- [ ] Outside status words remain clear without color; API details and wrapped continuations align after the marker without extra boxes.
+- [ ] Short, long, empty, and multiline titles/content render correctly; separator markers differ from empty rows, and the overview has no automatic dividers.
+- [ ] Widths at 6, 20, 40, 55, 56, 72, 80, and 88 columns, invalid budgets, and known terminal widths below 6 are handled without unintended frame overflow.
 - [ ] Chinese/English mixtures, emoji, combining marks, long paths, tabs, and CRLF input wrap safely and preserve alignment.
 - [ ] Embedded ANSI/OSC and unsafe control characters in supplied text cannot inject terminal behavior.
 - [ ] Styled output contains the expected 24-bit sequences and resets. Plain output contains no ANSI styling; verify both paths explicitly rather than relying on uncolored test-runner output.
