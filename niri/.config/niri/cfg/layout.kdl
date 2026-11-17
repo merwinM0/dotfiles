@@ -5,6 +5,7 @@
         // 亮青：与 Fish / Yazi 的主强调色保持一致。
         focus-ring {
             on
+            width 2
             active-color "#8be9e1"
         }
 

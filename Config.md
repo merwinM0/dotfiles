@@ -85,18 +85,19 @@ niri msg windows
 
 ### 亮青活动窗口边框
 
-配置文件：`niri/.config/niri/cfg/layout.kdl`。活动窗口的焦点边框使用亮青 `#8be9e1`，比原湖青更明亮，与 Fish / Yazi 的强调色一致；不改变原有线宽、布局、圆角或快捷键。
+配置文件：`niri/.config/niri/cfg/layout.kdl`。活动窗口的焦点边框宽度为 `2`，使用亮青 `#8be9e1`，与 Fish / Yazi 的强调色一致；不改变布局、圆角或快捷键。
 
 ```kdl
 layout {
     focus-ring {
         on
+        width 2
         active-color "#8be9e1"
     }
 }
 ```
 
-以上仅展示配色片段，应放入现有的 `layout` 块，不要覆盖整个配置文件。修改后校验并重载：
+以上仅展示边框配置片段，应放入现有的 `layout` 块，不要覆盖整个配置文件。修改后校验并重载：
 
 ```bash
 niri validate -c ~/.config/niri/config.kdl

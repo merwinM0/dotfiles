@@ -3,7 +3,7 @@
 ## 已有功能
 
 - 按 Stow 包管理终端和桌面配置。
-- Fish、Niri、Yazi 的亮青配色。
+- Fish、Niri、Yazi 的亮青配色；Niri 焦点边框宽度为 2。
 - `aur`、`pac`、`uninstall` 交互式包管理和离线测试。
 - Yazi 图片、PDF 和 Word 阅读与预览。
 - 本地 Pi 透明背景与消息边框补丁。
