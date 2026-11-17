@@ -198,6 +198,8 @@ stow --target="$HOME" tmux
 
 已有服务器时执行 `tmux source-file ~/.tmux.conf`，否则创建会话。Fish 目录已有 Stow 链接时，新增函数可自动加载，不需要重写本机 `config.fish`。
 
+Fish 不再自动加载 obugs 终端包装器，新窗口直接运行 Fish。旧终端需要正常退出并重开，才能移除已有包装进程；不要强杀包装进程，以免连带结束 Shell 和作业。旧进程退出前会重建空的 `~/.local/state/obugs/`，退出后可用 `rmdir ~/.local/state/obugs` 删除。
+
 离线验证：`python3 -B tests/test_tmkeys.py -v`。测试使用临时 socket，不影响日常会话。
 
 ---
