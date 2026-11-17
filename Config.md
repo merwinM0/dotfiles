@@ -26,6 +26,7 @@ pac --help
 - 配色参考 [青.md](青.md) 的亮色：月白 `#EBF5F7`、浅青 `#BEE7E3`、碧青 `#A7DFDB`；失败/警告保留红黄状态色。
 - 软件包列表从顶部开始，支持搜索、Tab 多选、Enter 确认、Esc 取消；窄终端的预览自动移到底部。
 - `Alt+P` 切换预览，`Alt+J/K` 滚动，`Alt+D/U` 半页滚动；AUR 的 `Alt+B`（小写 b）预览 PKGBUILD，`Alt+Shift+B` 返回包信息。
+- 在 tmux 中使用这些列表按键前，先执行 `tmkeys fish`；结束后用 `tmkeys tmux` 恢复 tmux 的 Alt 操作。
 - 列表载入和数据库核验使用青色色块动画。事务通过 PTY 保留真实终端交互，可识别的 pacman 普通/吃豆进度条替换为青色色块；不改变全局 `/etc/pacman.conf`，不影响直接运行的 pacman/yay。
 - 下载使用青色，AUR 构建提示用紫色，检查用浅蓝，安装/成功用绿色，卸载/警告用琥珀色，错误用红色；同时保留阶段名称与符号。构建日志正常透传，不伪造百分比，也不额外提示“无可用百分比”。
 - 执行前显示所选包数量与来源；第二步不额外输出操作说明。密码、最终事务清单、确认和 PKGBUILD 审阅均由原包管理器处理。未知或跨读取边界的输出原样透传，不隐藏错误。
@@ -158,6 +159,46 @@ git config --global credential.helper store
 # 任意执行一次 git push，输入用户名和 Token 后会自动保存
 git push
 ```
+
+---
+
+## tmux 与 Fish 按键切换
+
+配置：`tmux/.tmux.conf`。Fish 入口：`fish/.config/fish/functions/tmkeys.fish`。函数说明见 [函数说明.md](fish/.config/fish/functions/函数说明.md)。
+
+| 命令 | 作用 |
+| --- | --- |
+| `tmkeys tmux` | Alt 快捷键交给 tmux，默认模式 |
+| `tmkeys fish` | Alt 快捷键交给当前程序 |
+| `tmkeys toggle` | 切换模式 |
+| `tmkeys status` | 查看当前模式；不带参数效果相同 |
+
+模式只影响当前窗格；新窗格默认 `tmux`，已有窗格重连和重载配置后保留模式。`Ctrl+b` 始终可用，复制模式保留自己的按键。状态栏右侧显示 `tmux` 或 `fish`。
+
+| 按键 | tmux 模式下的作用 |
+| --- | --- |
+| `Alt+方向键` | 切换窗格；左右到边缘后切换窗口 |
+| `Alt+Shift+方向键` | 调整窗格大小 |
+| `Alt+0`～`Alt+9` | 按编号切换窗口 |
+| `Alt+Enter` | 新建窗口 |
+| `Alt+h` / `Alt+v` | 上下 / 左右分屏 |
+| `Alt+q` | 确认后关闭当前窗格 |
+| `Alt+w` / `Alt+d` | 选择窗口 / 分离会话 |
+| `Alt+t` / `Alt+s` | 重命名窗口 / 会话 |
+| `Alt+r` | 重载 `~/.tmux.conf` |
+| `Alt+k` / `Alt+j` | 进入复制模式，上下滚动半页 |
+
+启用时先检查目标文件，再链接配置：
+
+```sh
+cd ~/dotfiles
+stow --simulate --target="$HOME" tmux
+stow --target="$HOME" tmux
+```
+
+已有服务器时执行 `tmux source-file ~/.tmux.conf`，否则创建会话。Fish 目录已有 Stow 链接时，新增函数可自动加载，不需要重写本机 `config.fish`。
+
+离线验证：`python3 -B tests/test_tmkeys.py -v`。测试使用临时 socket，不影响日常会话。
 
 ---
 
