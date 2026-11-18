@@ -380,6 +380,14 @@ node --test tests/test_pi_ui.mjs
 
 ---
 
+## Pi 本地工具箱
+
+Pi 的全局约定在写通用脚本前查 `~/agent-toolbox/INDEX.md`，优先复用，缺少且值得复用的功能先写成 Python + `uv`。工具箱是独立的本地目录，不随本仓库的 Stow 包创建；不存在时跳过索引检查。
+
+在当前 Pi 会话执行 `/reload` 后，使用 [`/toolbox-review [工具名]`](.pi/.pi/agent/prompts/toolbox-review.md) 手动评估是否值得迁移到 Go。评估不改文件，单独批准后才迁移；用法和构建流程见工具箱内的 `README.md` 与 `docs/GO-MIGRATION.md`。
+
+---
+
 ## Stow 使用
 
 ### 当前新增的管理项

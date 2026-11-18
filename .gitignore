@@ -1,4 +1,4 @@
-# Pi: keep reusable instructions, skills and themes only.
+# Pi: keep reusable instructions, skills, themes and approved prompts only.
 # Ignore auth, personal settings, model/MCP configs, sessions, crash reports
 # and other runtime files by default, including newly introduced ones.
 /.pi/.pi/agent/*
@@ -6,6 +6,9 @@
 !/.pi/.pi/agent/AGENTS.md
 !/.pi/.pi/agent/skills/
 !/.pi/.pi/agent/themes/
+!/.pi/.pi/agent/prompts/
+/.pi/.pi/agent/prompts/*
+!/.pi/.pi/agent/prompts/toolbox-review.md
 !/.pi/.pi/agent/npm/
 /.pi/.pi/agent/npm/*
 !/.pi/.pi/agent/npm/.gitignore
